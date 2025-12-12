@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	h := server.NewMySrv(":8082")
+	h := server.NewMySrv(":8081")
 	http.ListenAndServe(h.Port, &h.Mux)
 }
 

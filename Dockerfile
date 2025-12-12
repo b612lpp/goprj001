@@ -1,6 +1,6 @@
 FROM golang:1.25.5 AS builder
 WORKDIR /build
-COPY *.go .
+COPY . .
 COPY go.mod .
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /app/myapp.goprj001
 
