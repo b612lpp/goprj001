@@ -1,49 +1,18 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"log"
 	"net/http"
+
+	"github.com/b612lpp/goprj001/server"
 )
 
 func main() {
-	m := http.NewServeMux()
-	m.HandleFunc("/", mainP)
-	m.HandleFunc("/hello", helloPage)
-	log.Fatal(http.ListenAndServe(":8081", m))
+	h := server.NewMySrv(":8082")
+	http.ListenAndServe(h.Port, &h.Mux)
 }
 
-func mainP(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "hello world")
-	fmt.Println("1")
+/**
+хэндлер фанк это функциональный тип который на вход принимает путь(/blabla) и функцию и реализует интерфейс Handler с методом ServeHTTP
+listenandserv принимает как обработчик объект соответствующий интерфейсу Handler
 
-}
-
-func helloPage(w http.ResponseWriter, r *http.Request) {
-	// Устанавливаем CORS заголовки
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	type incomingData struct {
-		Name string `json:"name"`
-	}
-	type outgoingData struct {
-		Message string `json:"message"`
-	}
-	var incV incomingData
-	buff := r.Body
-	fmt.Println(buff)
-	decoder := json.NewDecoder(buff)
-	decoder.Decode(&incV)
-	//fmt.Fprintf(w, "hello %s", incV.Name)
-	// Создаем JSON ответ
-	//response := map[string]string{
-	//	"message": fmt.Sprintf("Привет, %s!", incV.Name),
-	//}
-	response := outgoingData{"Hello " + incV.Name}
-
-	// Кодируем и отправляем ответ
-	json.NewEncoder(w).Encode(response)
-
-}
+*/

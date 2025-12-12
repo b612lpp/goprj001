@@ -2,531 +2,738 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Приветствие от сервера</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Умная Кладовая - Показания счетчиков</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
-
+        
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             color: #333;
+            line-height: 1.6;
         }
-
+        
         .container {
-            width: 100%;
-            max-width: 500px;
+            max-width: 430px;
             margin: 0 auto;
+            padding: 20px;
+            padding-top: max(20px, env(safe-area-inset-top));
         }
-
-        .card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .logo {
+        
+        .header {
             text-align: center;
             margin-bottom: 30px;
+            color: white;
+            padding: 20px 0;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            backdrop-filter: blur(10px);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #4a5568;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .card-title i {
+            margin-right: 10px;
+            font-size: 20px;
             color: #667eea;
         }
-
-        .logo i {
-            font-size: 48px;
-            margin-bottom: 15px;
+        
+        .form-group {
+            margin-bottom: 20px;
         }
-
-        .logo h1 {
-            font-size: 28px;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-        }
-
-        .input-group {
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        .input-group label {
+        
+        .form-group label {
             display: block;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 500;
-            font-size: 14px;
-            color: #555;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: #4a5568;
         }
-
+        
         .input-wrapper {
             position: relative;
         }
-
+        
         .input-wrapper i {
             position: absolute;
-            left: 20px;
+            left: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #667eea;
+            color: #a0aec0;
             font-size: 18px;
         }
-
-        input {
+        
+        input[type="number"] {
             width: 100%;
-            padding: 18px 20px 18px 55px;
-            border: 2px solid #e1e5e9;
+            padding: 16px 16px 16px 50px;
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            background: white;
-            color: #333;
+            font-size: 18px;
+            font-weight: 500;
+            transition: all 0.3s;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
         }
-
-        input:focus {
+        
+        input[type="number"]:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
-
-        .button-wrapper {
-            margin-top: 10px;
+        
+        .unit {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+            font-weight: 500;
         }
-
-        button {
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 25px;
+            background: #edf2f7;
+            border-radius: 12px;
+            padding: 5px;
+        }
+        
+        .tab {
+            flex: 1;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #4a5568;
+        }
+        
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .electricity-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+        
+        @media (min-width: 350px) {
+            .electricity-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .electricity-grid .form-group:nth-child(3) {
+                grid-column: span 2;
+            }
+        }
+        
+        .btn {
+            display: block;
             width: 100%;
             padding: 18px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            letter-spacing: 0.5px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            margin-top: 10px;
         }
-
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
         }
-
-        button:active {
-            transform: translateY(0);
+        
+        .btn i {
+            margin-right: 10px;
         }
-
-        button:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .response-section {
-            margin-top: 40px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 0.5s ease;
-        }
-
-        .response-section.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .response-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #555;
-            margin-bottom: 10px;
-            font-weight: 500;
-        }
-
-        .response-box {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 25px;
-            min-height: 100px;
-            border-left: 4px solid #667eea;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
+        
         .response-message {
-            font-size: 20px;
-            font-weight: 500;
-            color: #333;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .response-error {
-            color: #e74c3c;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .server-info {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e1e5e9;
-            text-align: center;
-            font-size: 13px;
-            color: #777;
-        }
-
-        .server-url {
-            font-family: 'Courier New', monospace;
-            background: #f1f3f5;
-            padding: 5px 10px;
-            border-radius: 6px;
-            margin-top: 5px;
-            display: inline-block;
-            font-size: 12px;
-        }
-
-        .examples {
-            margin-top: 25px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .example-tag {
-            background: #f1f3f5;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            color: #555;
-        }
-
-        .example-tag:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .error-state input {
-            border-color: #e74c3c;
-        }
-
-        .success-state input {
-            border-color: #2ecc71;
-        }
-
-        .debug-info {
             margin-top: 20px;
             padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            font-size: 12px;
-            color: #666;
-            font-family: 'Courier New', monospace;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
             display: none;
         }
-
-        .debug-toggle {
-            text-align: center;
+        
+        .success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block;
+        }
+        
+        .error {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block;
+        }
+        
+        .server-settings {
+            background: rgba(255, 255, 255, 0.9);
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
+        }
+        
+        .server-group {
+            margin-bottom: 15px;
+        }
+        
+        .server-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 14px;
+        }
+        
+        .server-input {
+            display: flex;
+        }
+        
+        .server-input input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        .server-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .server-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .save-btn {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .reset-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .history-btn {
+            background: #edf2f7;
+            color: #4a5568;
             margin-top: 15px;
+            font-size: 16px;
         }
-
-        .debug-toggle button {
+        
+        .history-btn i {
+            margin-right: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 30px;
+            padding: 20px;
+            font-size: 14px;
+        }
+        
+        /* Анимации */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+        
+        /* Стили для iPhone notch */
+        .safe-area-top {
+            height: env(safe-area-inset-top);
             background: transparent;
-            color: #667eea;
-            border: 1px solid #667eea;
-            padding: 8px 15px;
-            font-size: 12px;
-            width: auto;
         }
-
-        @media (max-width: 600px) {
-            .card {
-                padding: 30px 25px;
-            }
-            
-            .logo h1 {
-                font-size: 24px;
-            }
-            
-            .response-message {
-                font-size: 18px;
-            }
+        
+        /* Убираем стрелки у input number */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .info-text {
+            font-size: 12px;
+            color: #718096;
+            margin-top: 5px;
+            font-style: italic;
         }
     </style>
 </head>
 <body>
+    <div class="safe-area-top"></div>
     <div class="container">
-        <div class="card">
-            <div class="logo">
-                <i class="fas fa-comment-alt"></i>
-                <h1>Приветствие от сервера</h1>
+        <div class="header">
+            <h1><i class="fas fa-home"></i> Умная Кладовая</h1>
+            <p>Отправка показаний счетчиков</p>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="gas">Газ</div>
+            <div class="tab" data-tab="electricity">Электричество</div>
+        </div>
+        
+        <!-- Карточка для газа -->
+        <div class="card tab-content active" id="gas-tab">
+            <div class="card-title">
+                <i class="fas fa-fire"></i> Показания газового счетчика
             </div>
-
-            <div class="input-group">
-                <label for="nameInput">Ваше имя</label>
+            
+            <div class="form-group">
+                <label for="gas-value">Показания счетчика (целое число)</label>
                 <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
-                    <input type="text" id="nameInput" placeholder="Введите ваше имя" value="Александр">
+                    <i class="fas fa-fire"></i>
+                    <input type="number" id="gas-value" placeholder="0" min="0" step="1">
+                    <span class="unit">м³</span>
                 </div>
+                <div class="info-text">Будет отправлено как {"day": значение}</div>
             </div>
-
-            <div class="examples">
-                <div class="example-tag" data-name="Мария">Мария</div>
-                <div class="example-tag" data-name="Иван">Иван</div>
-                <div class="example-tag" data-name="Анна">Анна</div>
-                <div class="example-tag" data-name="Дмитрий">Дмитрий</div>
+            
+            <button class="btn" id="submit-gas">
+                <i class="fas fa-paper-plane"></i> Отправить в /appgas
+            </button>
+        </div>
+        
+        <!-- Карточка для электричества -->
+        <div class="card tab-content" id="electricity-tab">
+            <div class="card-title">
+                <i class="fas fa-bolt"></i> Показания электросчетчика
             </div>
-
-            <div class="button-wrapper">
-                <button id="sendButton">
-                    <span>Отправить приветствие</span>
-                </button>
-            </div>
-
-            <div class="debug-toggle">
-                <button id="toggleDebug">Показать отладку</button>
-            </div>
-
-            <div class="debug-info" id="debugInfo">
-                <!-- Сюда будут добавляться отладочные сообщения -->
-            </div>
-
-            <div class="response-section" id="responseSection">
-                <div class="response-title">Ответ от сервера</div>
-                <div class="response-box" id="responseBox">
-                    <div class="response-message" id="responseMessage">
-                        Здесь появится ответ от сервера
+            
+            <div class="electricity-grid">
+                <div class="form-group">
+                    <label for="day-reading">Дневное потребление (целое число)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-sun"></i>
+                        <input type="number" id="day-reading" placeholder="0" min="0" step="1">
+                        <span class="unit">кВт·ч</span>
                     </div>
                 </div>
+                
+                <div class="form-group">
+                    <label for="night-reading">Ночное потребление (целое число)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-moon"></i>
+                        <input type="number" id="night-reading" placeholder="0" min="0" step="1">
+                        <span class="unit">кВт·ч</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="summ-reading">Суммарное потребление (целое число)</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-bolt"></i>
+                        <input type="number" id="summ-reading" placeholder="0" min="0" step="1">
+                        <span class="unit">кВт·ч</span>
+                    </div>
+                    <div class="info-text">Будет отправлено как {"day": ..., "night": ..., "summ": ...}</div>
+                </div>
             </div>
-
-            <div class="server-info">
-                <div>Сервер: <span class="server-url">http://localhost:8081/hello</span></div>
-                <div>Ожидаемый формат ответа: {"message": "Привет, Имя!"}</div>
+            
+            <button class="btn" id="submit-electricity">
+                <i class="fas fa-paper-plane"></i> Отправить в /appenergy
+            </button>
+        </div>
+        
+        <!-- Сообщение об успехе/ошибке -->
+        <div class="response-message" id="response-message"></div>
+        
+        <!-- Настройки сервера -->
+        <div class="card server-settings">
+            <div class="card-title">
+                <i class="fas fa-server"></i> Настройки сервера
+            </div>
+            
+            <div class="server-group">
+                <label for="gas-server-url">Endpoint для газа (/appgas)</label>
+                <div class="server-input">
+                    <input type="text" id="gas-server-url" value="http://localhost:8082/sendgas">
+                </div>
+            </div>
+            
+            <div class="server-group">
+                <label for="energy-server-url">Endpoint для электричества (/appenergy)</label>
+                <div class="server-input">
+                    <input type="text" id="energy-server-url" value="http://localhost:8082/sendenergy">
+                </div>
+            </div>
+            
+            <div class="server-buttons">
+                <button class="save-btn" id="save-settings">
+                    <i class="fas fa-save"></i> Сохранить
+                </button>
+                <button class="reset-btn" id="reset-settings">
+                    <i class="fas fa-redo"></i> Сбросить
+                </button>
             </div>
         </div>
+        
+        <!-- Кнопка истории -->
+        <button class="btn history-btn" id="show-history">
+            <i class="fas fa-history"></i> Посмотреть историю отправок
+        </button>
     </div>
+    
+    <footer>
+        <p>Умная Кладовая &copy; 2023</p>
+        <p>Адаптировано для iPhone 14 Pro Max</p>
+    </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Элементы DOM
-            const nameInput = document.getElementById('nameInput');
-            const sendButton = document.getElementById('sendButton');
-            const responseSection = document.getElementById('responseSection');
-            const responseMessage = document.getElementById('responseMessage');
-            const responseBox = document.getElementById('responseBox');
-            const exampleTags = document.querySelectorAll('.example-tag');
-            const debugInfo = document.getElementById('debugInfo');
-            const toggleDebug = document.getElementById('toggleDebug');
+        // Элементы DOM
+        const gasTab = document.querySelector('[data-tab="gas"]');
+        const electricityTab = document.querySelector('[data-tab="electricity"]');
+        const gasTabContent = document.getElementById('gas-tab');
+        const electricityTabContent = document.getElementById('electricity-tab');
+        const submitGasBtn = document.getElementById('submit-gas');
+        const submitElectricityBtn = document.getElementById('submit-electricity');
+        const responseMessage = document.getElementById('response-message');
+        const gasServerUrlInput = document.getElementById('gas-server-url');
+        const energyServerUrlInput = document.getElementById('energy-server-url');
+        const saveSettingsBtn = document.getElementById('save-settings');
+        const resetSettingsBtn = document.getElementById('reset-settings');
+        const showHistoryBtn = document.getElementById('show-history');
+        
+        // Конфигурация по умолчанию
+        const defaultConfig = {
+            gasEndpoint: 'http://localhost:8082/sendgas',
+            energyEndpoint: 'http://localhost:8082/sendenergy'
+        };
+        
+        // Загружаем сохраненные настройки
+        let config = JSON.parse(localStorage.getItem('meterConfig') || JSON.stringify(defaultConfig));
+        gasServerUrlInput.value = config.gasEndpoint;
+        energyServerUrlInput.value = config.energyEndpoint;
+        
+        // Переключение вкладок
+        gasTab.addEventListener('click', () => {
+            gasTab.classList.add('active');
+            electricityTab.classList.remove('active');
+            gasTabContent.classList.add('active');
+            electricityTabContent.classList.remove('active');
+        });
+        
+        electricityTab.addEventListener('click', () => {
+            electricityTab.classList.add('active');
+            gasTab.classList.remove('active');
+            electricityTabContent.classList.add('active');
+            gasTabContent.classList.remove('active');
+        });
+        
+        // Сохранение настроек
+        saveSettingsBtn.addEventListener('click', () => {
+            const gasEndpoint = gasServerUrlInput.value.trim();
+            const energyEndpoint = energyServerUrlInput.value.trim();
             
-            // URL сервера
-            const SERVER_URL = 'http://localhost:8081/hello';
-            
-            // Функция для добавления отладочной информации
-            function addDebugInfo(message, type = 'info') {
-                const timestamp = new Date().toLocaleTimeString();
-                const color = type === 'error' ? '#e74c3c' : 
-                             type === 'success' ? '#2ecc71' : '#667eea';
-                
-                const debugEntry = document.createElement('div');
-                debugEntry.innerHTML = `<span style="color: #999">[${timestamp}]</span> <span style="color: ${color}">${message}</span>`;
-                debugInfo.appendChild(debugEntry);
-                
-                // Прокручиваем к последнему сообщению
-                debugInfo.scrollTop = debugInfo.scrollHeight;
+            if (!gasEndpoint || !energyEndpoint) {
+                showMessage('Пожалуйста, заполните оба endpoint\'а', 'error');
+                return;
             }
             
-            // Функция для отправки запроса
-            async function sendRequest() {
-                // Получаем имя из поля ввода
-                const name = nameInput.value.trim();
-                
-                // Проверяем, что имя введено
-                if (!name) {
-                    showError("Пожалуйста, введите ваше имя");
-                    addDebugInfo("Ошибка: имя не введено", "error");
-                    nameInput.focus();
+            config = {
+                gasEndpoint: gasEndpoint,
+                energyEndpoint: energyEndpoint
+            };
+            
+            localStorage.setItem('meterConfig', JSON.stringify(config));
+            showMessage('Настройки сохранены!', 'success');
+        });
+        
+        // Сброс настроек
+        resetSettingsBtn.addEventListener('click', () => {
+            if (confirm('Сбросить настройки к значениям по умолчанию?')) {
+                config = { ...defaultConfig };
+                gasServerUrlInput.value = config.gasEndpoint;
+                energyServerUrlInput.value = config.energyEndpoint;
+                localStorage.setItem('meterConfig', JSON.stringify(config));
+                showMessage('Настройки сброшены', 'success');
+            }
+        });
+        
+        // Отправка показаний газа
+        submitGasBtn.addEventListener('click', async () => {
+            const gasValue = document.getElementById('gas-value').value;
+            
+            if (!gasValue || parseInt(gasValue) < 0) {
+                showMessage('Пожалуйста, введите корректные показания газа (целое число ≥ 0)', 'error');
+                return;
+            }
+            
+            // Формируем данные по структуре DataGas
+            const data = {
+                day: parseInt(gasValue)  // Поле "day" содержит значение газа
+            };
+            
+            await sendData(data, config.gasEndpoint, 'gas');
+        });
+        
+        // Отправка показаний электричества
+        submitElectricityBtn.addEventListener('click', async () => {
+            const dayValue = document.getElementById('day-reading').value;
+            const nightValue = document.getElementById('night-reading').value;
+            const summValue = document.getElementById('summ-reading').value;
+            
+            // Проверка ввода
+            if (!dayValue || !nightValue || !summValue) {
+                showMessage('Пожалуйста, заполните все поля для электричества', 'error');
+                return;
+            }
+            
+            const day = parseInt(dayValue);
+            const night = parseInt(nightValue);
+            const summ = parseInt(summValue);
+            
+            if (day < 0 || night < 0 || summ < 0) {
+                showMessage('Показания не могут быть отрицательными', 'error');
+                return;
+            }
+            
+            // Проверяем сумму (опционально)
+            if (summ !== (day + night)) {
+                if (!confirm(`Сумма дневного (${day}) и ночного (${night}) = ${day + night}, но вы ввели ${summ}. Продолжить?`)) {
                     return;
                 }
+            }
+            
+            // Формируем данные по структуре DataEnergy
+            const data = {
+                day: day,
+                night: night,
+                summ: summ
+            };
+            
+            await sendData(data, config.energyEndpoint, 'electricity');
+        });
+        
+        // Функция отправки данных на сервер
+        async function sendData(data, endpoint, type) {
+            try {
+                showMessage('Отправка данных...', 'success');
                 
-                // Формируем JSON данные (только имя)
-                const jsonData = {
-                    name: name
-                };
+                console.log(`Отправка ${type} на ${endpoint}:`, data);
                 
-                // Показываем состояние отправки
-                setLoadingState(true);
-                addDebugInfo(`Отправка запроса для имени: "${name}"`, "info");
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
                 
-                try {
-                    // Отправляем POST запрос на сервер
-                    const response = await fetch(SERVER_URL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(jsonData),
-                        mode: 'cors' // Явно указываем режим CORS
+                if (response.ok) {
+                    let result;
+                    try {
+                        result = await response.json();
+                    } catch (e) {
+                        result = { message: 'Данные получены (не JSON ответ)' };
+                    }
+                    
+                    showMessage(`✅ Данные успешно отправлены на ${endpoint}`, 'success');
+                    
+                    // Сохраняем в историю
+                    saveToHistory({
+                        type: type,
+                        data: data,
+                        endpoint: endpoint,
+                        timestamp: new Date().toISOString()
                     });
                     
-                    addDebugInfo(`Статус ответа: ${response.status} ${response.statusText}`, "info");
-                    
-                    // Получаем ответ
-                    const data = await response.json();
-                    addDebugInfo(`Получен ответ: ${JSON.stringify(data)}`, "success");
-                    
-                    // Проверяем формат ответа
-                    if (data && data.message) {
-                        showSuccess(data.message);
-                    } else {
-                        showError("Неверный формат ответа от сервера");
-                        addDebugInfo("Ошибка: неверный формат ответа", "error");
-                    }
-                    
-                } catch (error) {
-                    // Обрабатываем ошибки
-                    addDebugInfo(`Ошибка: ${error.message}`, "error");
-                    
-                    if (error.name === 'TypeError' && error.message.includes('fetch')) {
-                        showError("Не удалось соединиться с сервером. Убедитесь, что сервер запущен и CORS настроен правильно.");
-                    } else if (error.name === 'SyntaxError') {
-                        showError("Сервер вернул некорректный JSON. Проверьте обработчик на сервере.");
-                    } else {
-                        showError(`Ошибка: ${error.message}`);
-                    }
-                    
-                } finally {
-                    // Восстанавливаем кнопку
-                    setLoadingState(false);
-                }
-            }
-            
-            // Функция для показа успешного ответа
-            function showSuccess(message) {
-                // Показываем секцию с ответом
-                responseSection.classList.add('visible');
-                
-                // Устанавливаем сообщение
-                responseMessage.textContent = message;
-                responseMessage.classList.remove('response-error');
-                
-                // Очищаем классы ошибки/успеха у инпута
-                nameInput.parentElement.parentElement.classList.remove('error-state');
-                nameInput.parentElement.parentElement.classList.add('success-state');
-                
-                // Обновляем стиль ответа
-                responseBox.style.borderLeftColor = '#2ecc71';
-            }
-            
-            // Функция для показа ошибки
-            function showError(errorText) {
-                // Показываем секцию с ответом
-                responseSection.classList.add('visible');
-                
-                // Устанавливаем сообщение об ошибке
-                responseMessage.textContent = errorText;
-                responseMessage.classList.add('response-error');
-                
-                // Добавляем класс ошибки к инпуту
-                nameInput.parentElement.parentElement.classList.add('error-state');
-                nameInput.parentElement.parentElement.classList.remove('success-state');
-                
-                // Обновляем стиль ответа
-                responseBox.style.borderLeftColor = '#e74c3c';
-            }
-            
-            // Функция для установки состояния загрузки
-            function setLoadingState(isLoading) {
-                if (isLoading) {
-                    sendButton.innerHTML = '<div class="loading"></div><span>Отправка...</span>';
-                    sendButton.disabled = true;
+                    // Очищаем поля
+                    clearInputs(type);
                 } else {
-                    sendButton.innerHTML = '<span>Отправить приветствие</span>';
-                    sendButton.disabled = false;
+                    const errorText = await response.text();
+                    showMessage(`❌ Ошибка сервера ${response.status}: ${errorText || 'Неизвестная ошибка'}`, 'error');
                 }
+            } catch (error) {
+                console.error('Ошибка отправки:', error);
+                showMessage(`❌ Ошибка подключения к ${endpoint}: ${error.message}`, 'error');
+            }
+        }
+        
+        // Функция показа сообщений
+        function showMessage(text, type) {
+            responseMessage.textContent = text;
+            responseMessage.className = 'response-message ' + type + ' fade-in';
+            
+            // Автоскрытие для успешных сообщений
+            if (type === 'success') {
+                setTimeout(() => {
+                    responseMessage.style.display = 'none';
+                }, 5000);
+            }
+        }
+        
+        // Сохранение в историю (localStorage)
+        function saveToHistory(entry) {
+            let history = JSON.parse(localStorage.getItem('meterHistory') || '[]');
+            
+            entry.sentAt = new Date().toLocaleString('ru-RU');
+            history.push(entry);
+            
+            // Храним только последние 50 записей
+            if (history.length > 50) {
+                history = history.slice(-50);
             }
             
-            // Обработчик клика по кнопке
-            sendButton.addEventListener('click', sendRequest);
+            localStorage.setItem('meterHistory', JSON.stringify(history));
+        }
+        
+        // Показать историю
+        showHistoryBtn.addEventListener('click', () => {
+            const history = JSON.parse(localStorage.getItem('meterHistory') || '[]');
             
-            // Обработчики для тегов с примерами имен
-            exampleTags.forEach(tag => {
-                tag.addEventListener('click', function() {
-                    const name = this.dataset.name;
-                    nameInput.value = name;
-                    
-                    // Убираем состояния ошибки/успеха
-                    nameInput.parentElement.parentElement.classList.remove('error-state', 'success-state');
-                    
-                    // Фокус на поле ввода
-                    nameInput.focus();
-                    
-                    addDebugInfo(`Выбрано имя из примеров: "${name}"`, "info");
-                });
-            });
+            if (history.length === 0) {
+                showMessage('История отправок пуста', 'error');
+                return;
+            }
             
-            // Переключение отладочной информации
-            toggleDebug.addEventListener('click', function() {
-                if (debugInfo.style.display === 'block') {
-                    debugInfo.style.display = 'none';
-                    this.textContent = 'Показать отладку';
+            let historyText = '📊 История отправок:\n\n';
+            history.forEach((item, index) => {
+                const date = new Date(item.timestamp).toLocaleString('ru-RU');
+                if (item.type === 'gas') {
+                    historyText += `${index + 1}. Газ на ${item.endpoint}\n`;
+                    historyText += `   Данные: {"day": ${item.data.day}}\n`;
                 } else {
-                    debugInfo.style.display = 'block';
-                    this.textContent = 'Скрыть отладку';
+                    historyText += `${index + 1}. Электричество на ${item.endpoint}\n`;
+                    historyText += `   Данные: {"day": ${item.data.day}, "night": ${item.data.night}, "summ": ${item.data.summ}}\n`;
                 }
+                historyText += `   Время: ${item.sentAt}\n\n`;
             });
             
-            // Отправка по нажатию Enter
-            nameInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendRequest();
+            alert(historyText);
+        });
+        
+        // Очистка полей ввода
+        function clearInputs(type) {
+            if (type === 'gas') {
+                document.getElementById('gas-value').value = '';
+            } else if (type === 'electricity') {
+                document.getElementById('day-reading').value = '';
+                document.getElementById('night-reading').value = '';
+                document.getElementById('summ-reading').value = '';
+            }
+        }
+        
+        // Автоматический расчет суммы
+        document.getElementById('day-reading').addEventListener('input', calculateSum);
+        document.getElementById('night-reading').addEventListener('input', calculateSum);
+        
+        function calculateSum() {
+            const day = parseInt(document.getElementById('day-reading').value) || 0;
+            const night = parseInt(document.getElementById('night-reading').value) || 0;
+            const summInput = document.getElementById('summ-reading');
+            
+            if (day > 0 || night > 0) {
+                summInput.value = day + night;
+            }
+        }
+        
+        // Виброотклик на кнопках (для поддерживающих устройств)
+        const buttons = document.querySelectorAll('.btn, .tab');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (navigator.vibrate) {
+                    navigator.vibrate(10);
                 }
             });
+        });
+        
+        // Сохранение ввода при перезагрузке
+        window.addEventListener('beforeunload', () => {
+            const inputs = {
+                gas: document.getElementById('gas-value').value,
+                day: document.getElementById('day-reading').value,
+                night: document.getElementById('night-reading').value,
+                summ: document.getElementById('summ-reading').value,
+                activeTab: document.querySelector('.tab.active').dataset.tab
+            };
+            localStorage.setItem('meterInputs', JSON.stringify(inputs));
+        });
+        
+        // Восстановление ввода при загрузке
+        window.addEventListener('load', () => {
+            const savedInputs = JSON.parse(localStorage.getItem('meterInputs') || '{}');
             
-            // Показываем секцию с ответом при загрузке с примером
-            responseMessage.textContent = "Пример ответа: Привет, Александр!";
-            responseSection.classList.add('visible');
+            if (savedInputs.gas) document.getElementById('gas-value').value = savedInputs.gas;
+            if (savedInputs.day) document.getElementById('day-reading').value = savedInputs.day;
+            if (savedInputs.night) document.getElementById('night-reading').value = savedInputs.night;
+            if (savedInputs.summ) document.getElementById('summ-reading').value = savedInputs.summ;
             
-            // Фокус на поле ввода при загрузке
-            nameInput.focus();
-            nameInput.select();
-            
-            // Добавляем начальное отладочное сообщение
-            addDebugInfo("Страница загружена. Готово к отправке запросов.", "info");
+            if (savedInputs.activeTab === 'electricity') {
+                electricityTab.click();
+            }
+        });
+        
+        // Уведомление при успешной загрузке
+        window.addEventListener('load', () => {
+            console.log('Приложение "Умная Кладовая" успешно загружено!');
+            console.log('Конфигурация:', config);
         });
     </script>
 </body>
