@@ -412,14 +412,14 @@
             <div class="server-group">
                 <label for="gas-server-url">Endpoint для газа (/appgas)</label>
                 <div class="server-input">
-                    <input type="text" id="gas-server-url" value="http://localhost:8082/sendgas">
+                    <input type="text" id="gas-server-url" value="http://192.168.3.100:8081/sendgas">
                 </div>
             </div>
             
             <div class="server-group">
                 <label for="energy-server-url">Endpoint для электричества (/appenergy)</label>
                 <div class="server-input">
-                    <input type="text" id="energy-server-url" value="http://localhost:8082/sendenergy">
+                    <input type="text" id="energy-server-url" value="http://192.168.3.100:8081/sendenergy">
                 </div>
             </div>
             
@@ -461,8 +461,8 @@
         
         // Конфигурация по умолчанию
         const defaultConfig = {
-            gasEndpoint: 'http://localhost:8082/sendgas',
-            energyEndpoint: 'http://localhost:8082/sendenergy'
+            gasEndpoint: 'http://192.168.3.100:8081/sendgas',
+            energyEndpoint: 'http://192.168.3.100:8081/sendenergy'
         };
         
         // Загружаем сохраненные настройки
