@@ -10,8 +10,8 @@ type mySrv struct {
 func NewMySrv(p string) *mySrv {
 	h := mySrv{p, *http.NewServeMux()}
 	h.Mux.HandleFunc("/", setCorsMW(h.home))
-	h.Mux.HandleFunc("/sendgas", setCorsMW(h.appgas))
-	h.Mux.HandleFunc("/sendenergy", setCorsMW(h.appenergy))
+	h.Mux.HandleFunc("/sendgas", setCorsMW(h.sendgas))
+	h.Mux.HandleFunc("/sendenergy", setCorsMW(h.sendenergy))
 
 	return &h
 }
