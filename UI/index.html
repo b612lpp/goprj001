@@ -2,76 +2,115 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Умная Кладовая - Показания счетчиков</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои счетчики | ЖКХ</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #f5f7fa;
             min-height: 100vh;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+            padding: 20px;
             color: #333;
-            line-height: 1.6;
         }
         
         .container {
-            max-width: 430px;
+            max-width: 500px;
             margin: 0 auto;
-            padding: 20px;
-            padding-top: max(20px, env(safe-area-inset-top));
         }
         
         .header {
             text-align: center;
             margin-bottom: 30px;
-            color: white;
-            padding: 20px 0;
+            padding: 20px;
         }
         
         .header h1 {
+            color: #2c3e50;
             font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            margin-bottom: 10px;
         }
         
         .header p {
+            color: #7f8c8d;
             font-size: 16px;
-            opacity: 0.9;
         }
         
+        /* Переключатель */
+        .tab-switcher {
+            display: flex;
+            background: white;
+            border-radius: 12px;
+            padding: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #7f8c8d;
+        }
+        
+        .tab-btn.active {
+            background: #3498db;
+            color: white;
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background: #f8fafc;
+        }
+        
+        /* Карточка формы */
         .card {
             background: white;
-            border-radius: 20px;
+            border-radius: 16px;
             padding: 25px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e8e8e8;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .card.active {
+            display: block;
         }
         
         .card-title {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-            color: #4a5568;
-            font-size: 18px;
-            font-weight: 600;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .card-title h2 {
+            color: #2c3e50;
+            font-size: 20px;
         }
         
         .card-title i {
-            margin-right: 10px;
-            font-size: 20px;
-            color: #667eea;
+            color: #3498db;
+            font-size: 24px;
         }
         
         .form-group {
@@ -81,659 +120,571 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            font-weight: 500;
-            color: #4a5568;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 15px;
         }
         
-        .input-wrapper {
+        .input-with-icon {
             position: relative;
         }
         
-        .input-wrapper i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0aec0;
-            font-size: 18px;
-        }
-        
-        input[type="number"] {
+        .input-with-icon input {
             width: 100%;
             padding: 16px 16px 16px 50px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #e0e6ed;
             border-radius: 12px;
-            font-size: 18px;
-            font-weight: 500;
-            transition: all 0.3s;
-            -webkit-appearance: none;
-            -moz-appearance: textfield;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: #f8fafc;
         }
         
-        input[type="number"]:focus {
+        .input-with-icon input:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
         
-        .unit {
+        .input-with-icon .icon {
             position: absolute;
-            right: 15px;
+            left: 16px;
             top: 50%;
             transform: translateY(-50%);
-            color: #a0aec0;
-            font-weight: 500;
+            color: #3498db;
+            font-size: 20px;
         }
         
-        .tabs {
-            display: flex;
-            margin-bottom: 25px;
-            background: #edf2f7;
-            border-radius: 12px;
-            padding: 5px;
+        .input-with-icon .unit {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 14px;
         }
         
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 15px 10px;
+        .sum-display {
+            background: #f8fafc;
+            padding: 12px 16px;
             border-radius: 10px;
+            margin-top: 10px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            color: #4a5568;
-        }
-        
-        .tab.active {
-            background: white;
-            color: #667eea;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-        }
-        
-        .tab-content {
+            color: #2c3e50;
+            text-align: center;
+            border: 1px dashed #d1d8e0;
             display: none;
         }
         
-        .tab-content.active {
+        .sum-display.show {
             display: block;
-        }
-        
-        .electricity-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-        }
-        
-        @media (min-width: 350px) {
-            .electricity-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            
-            .electricity-grid .form-group:nth-child(3) {
-                grid-column: span 2;
-            }
+            animation: fadeIn 0.3s ease;
         }
         
         .btn {
-            display: block;
             width: 100%;
             padding: 18px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             border: none;
             border-radius: 12px;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             margin-top: 10px;
         }
         
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 4px 10px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn i {
-            margin-right: 10px;
-        }
-        
-        .response-message {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-weight: 500;
-            display: none;
-        }
-        
-        .success {
-            background: #c6f6d5;
-            color: #22543d;
-            display: block;
-        }
-        
-        .error {
-            background: #fed7d7;
-            color: #742a2a;
-            display: block;
-        }
-        
-        .server-settings {
-            background: rgba(255, 255, 255, 0.9);
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 12px;
-        }
-        
-        .server-group {
-            margin-bottom: 15px;
-        }
-        
-        .server-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            color: #4a5568;
-            font-size: 14px;
-        }
-        
-        .server-input {
-            display: flex;
-        }
-        
-        .server-input input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-        
-        .server-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .server-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .save-btn {
-            background: #48bb78;
+        .btn-primary {
+            background: #3498db;
             color: white;
         }
         
-        .reset-btn {
-            background: #e2e8f0;
-            color: #4a5568;
+        .btn-primary:hover:not(:disabled) {
+            background: #2980b9;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
         }
         
-        .history-btn {
-            background: #edf2f7;
-            color: #4a5568;
-            margin-top: 15px;
-            font-size: 16px;
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
         
-        .history-btn i {
-            margin-right: 8px;
-        }
-        
-        footer {
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 12px;
             text-align: center;
-            color: rgba(255, 255, 255, 0.8);
-            margin-top: 30px;
-            padding: 20px;
             font-size: 14px;
+            display: none;
+            animation: fadeIn 0.3s ease;
         }
         
-        /* Анимации */
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+        
+        .hint {
+            font-size: 13px;
+            color: #7f8c8d;
+            margin-top: 8px;
+            text-align: center;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+        }
+        
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(-5px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        .fade-in {
-            animation: fadeIn 0.4s ease-out;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
         
-        /* Стили для iPhone notch */
-        .safe-area-top {
-            height: env(safe-area-inset-top);
-            background: transparent;
+        .fa-spinner {
+            animation: spin 1s linear infinite;
         }
         
-        /* Убираем стрелки у input number */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        /* Адаптивность */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 15px 0;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .tab-btn {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .card {
+                padding: 20px;
+                border-radius: 14px;
+            }
+            
+            .input-with-icon input {
+                padding: 14px 14px 14px 45px;
+                font-size: 15px;
+            }
+            
+            .btn {
+                padding: 16px;
+                font-size: 15px;
+            }
         }
         
-        .info-text {
-            font-size: 12px;
-            color: #718096;
-            margin-top: 5px;
-            font-style: italic;
+        @media (max-width: 350px) {
+            body {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 15px;
+            }
+            
+            .tab-btn {
+                padding: 10px;
+                font-size: 13px;
+            }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <div class="safe-area-top"></div>
     <div class="container">
         <div class="header">
-            <h1><i class="fas fa-home"></i> Умная Кладовая</h1>
-            <p>Отправка показаний счетчиков</p>
+            <h1><i class="fas fa-tachometer-alt"></i> Мои счетчики</h1>
+            <p>Передача показаний за коммунальные услуги</p>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" data-tab="gas">Газ</div>
-            <div class="tab" data-tab="electricity">Электричество</div>
+        <!-- Переключатель между формами -->
+        <div class="tab-switcher">
+            <button class="tab-btn active" onclick="switchTab('gas')">
+                <i class="fas fa-fire"></i> Газ
+            </button>
+            <button class="tab-btn" onclick="switchTab('energy')">
+                <i class="fas fa-bolt"></i> Электричество
+            </button>
         </div>
         
-        <!-- Карточка для газа -->
-        <div class="card tab-content active" id="gas-tab">
+        <!-- Форма газа -->
+        <div class="card active" id="gasCard">
             <div class="card-title">
-                <i class="fas fa-fire"></i> Показания газового счетчика
+                <i class="fas fa-fire"></i>
+                <h2>Газовый счетчик</h2>
             </div>
             
             <div class="form-group">
-                <label for="gas-value">Показания счетчика (целое число)</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-fire"></i>
-                    <input type="number" id="gas-value" placeholder="0" min="0" step="1">
-                    <span class="unit">м³</span>
+                <label for="gas">Показания (м³)</label>
+                <div class="input-with-icon">
+                    <div class="icon"><i class="fas fa-fire"></i></div>
+                    <input 
+                        type="number" 
+                        id="gas" 
+                        placeholder="Например: 12345"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                    >
+                    <div class="unit">м³</div>
                 </div>
-                <div class="info-text">Будет отправлено как {"day": значение}</div>
             </div>
             
-            <button class="btn" id="submit-gas">
-                <i class="fas fa-paper-plane"></i> Отправить в /appgas
+            <button 
+                class="btn btn-primary" 
+                id="gasBtn"
+                onclick="sendGasReading()"
+            >
+                <i class="fas fa-paper-plane"></i> Отправить показания газа
             </button>
+            
+            <div class="hint">
+                <i class="fas fa-info-circle"></i> Указывайте целое число с текущего счетчика
+            </div>
         </div>
         
-        <!-- Карточка для электричества -->
-        <div class="card tab-content" id="electricity-tab">
+        <!-- Форма электричества -->
+        <div class="card" id="energyCard">
             <div class="card-title">
-                <i class="fas fa-bolt"></i> Показания электросчетчика
+                <i class="fas fa-bolt"></i>
+                <h2>Электрический счетчик</h2>
             </div>
             
-            <div class="electricity-grid">
-                <div class="form-group">
-                    <label for="day-reading">Дневное потребление (целое число)</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-sun"></i>
-                        <input type="number" id="day-reading" placeholder="0" min="0" step="1">
-                        <span class="unit">кВт·ч</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="night-reading">Ночное потребление (целое число)</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-moon"></i>
-                        <input type="number" id="night-reading" placeholder="0" min="0" step="1">
-                        <span class="unit">кВт·ч</span>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="summ-reading">Суммарное потребление (целое число)</label>
-                    <div class="input-wrapper">
-                        <i class="fas fa-bolt"></i>
-                        <input type="number" id="summ-reading" placeholder="0" min="0" step="1">
-                        <span class="unit">кВт·ч</span>
-                    </div>
-                    <div class="info-text">Будет отправлено как {"day": ..., "night": ..., "summ": ...}</div>
+            <div class="form-group">
+                <label for="day">Дневной тариф (кВт·ч)</label>
+                <div class="input-with-icon">
+                    <div class="icon"><i class="fas fa-sun"></i></div>
+                    <input 
+                        type="number" 
+                        id="day" 
+                        placeholder="Дневные показания"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                    >
+                    <div class="unit">кВт·ч</div>
                 </div>
             </div>
             
-            <button class="btn" id="submit-electricity">
-                <i class="fas fa-paper-plane"></i> Отправить в /appenergy
+            <div class="form-group">
+                <label for="night">Ночной тариф (кВт·ч)</label>
+                <div class="input-with-icon">
+                    <div class="icon"><i class="fas fa-moon"></i></div>
+                    <input 
+                        type="number" 
+                        id="night" 
+                        placeholder="Ночные показания"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                    >
+                    <div class="unit">кВт·ч</div>
+                </div>
+            </div>
+            
+            <div class="sum-display" id="sumDisplay">
+                <i class="fas fa-calculator"></i> Итого: <span id="sumValue">0</span> кВт·ч
+            </div>
+            
+            <button 
+                class="btn btn-primary" 
+                id="energyBtn"
+                onclick="sendEnergyReading()"
+            >
+                <i class="fas fa-bolt"></i> Отправить показания электричества
             </button>
+            
+            <div class="hint">
+                <i class="fas fa-info-circle"></i> Заполните хотя бы один из тарифов
+            </div>
         </div>
         
-        <!-- Сообщение об успехе/ошибке -->
-        <div class="response-message" id="response-message"></div>
+        <!-- Статус отправки -->
+        <div class="status" id="status"></div>
         
-        <!-- Настройки сервера -->
-        <div class="card server-settings">
+        <!-- Подсказка о будущей статистике -->
+        <div class="card">
             <div class="card-title">
-                <i class="fas fa-server"></i> Настройки сервера
+                <i class="fas fa-chart-line"></i>
+                <h2>История показаний</h2>
             </div>
-            
-            <div class="server-group">
-                <label for="gas-server-url">Endpoint для газа (/appgas)</label>
-                <div class="server-input">
-                    <input type="text" id="gas-server-url" value="http://192.168.3.100:8081/sendgas">
-                </div>
-            </div>
-            
-            <div class="server-group">
-                <label for="energy-server-url">Endpoint для электричества (/appenergy)</label>
-                <div class="server-input">
-                    <input type="text" id="energy-server-url" value="http://192.168.3.100:8081/sendenergy">
-                </div>
-            </div>
-            
-            <div class="server-buttons">
-                <button class="save-btn" id="save-settings">
-                    <i class="fas fa-save"></i> Сохранить
-                </button>
-                <button class="reset-btn" id="reset-settings">
-                    <i class="fas fa-redo"></i> Сбросить
-                </button>
-            </div>
+            <p style="color: #7f8c8d; line-height: 1.5;">
+                <i class="fas fa-clock"></i> В ближайшее время здесь появится 
+                возможность просматривать историю переданных показаний 
+                и анализировать потребление за разные периоды.
+            </p>
         </div>
-        
-        <!-- Кнопка истории -->
-        <button class="btn history-btn" id="show-history">
-            <i class="fas fa-history"></i> Посмотреть историю отправок
-        </button>
     </div>
-    
-    <footer>
-        <p>Умная Кладовая &copy; 2023</p>
-        <p>Адаптировано для iPhone 14 Pro Max</p>
-    </footer>
 
-    <script>
-        // Элементы DOM
-        const gasTab = document.querySelector('[data-tab="gas"]');
-        const electricityTab = document.querySelector('[data-tab="electricity"]');
-        const gasTabContent = document.getElementById('gas-tab');
-        const electricityTabContent = document.getElementById('electricity-tab');
-        const submitGasBtn = document.getElementById('submit-gas');
-        const submitElectricityBtn = document.getElementById('submit-electricity');
-        const responseMessage = document.getElementById('response-message');
-        const gasServerUrlInput = document.getElementById('gas-server-url');
-        const energyServerUrlInput = document.getElementById('energy-server-url');
-        const saveSettingsBtn = document.getElementById('save-settings');
-        const resetSettingsBtn = document.getElementById('reset-settings');
-        const showHistoryBtn = document.getElementById('show-history');
-        
-        // Конфигурация по умолчанию
-        const defaultConfig = {
-            gasEndpoint: 'http://192.168.3.100:8081/sendgas',
-            energyEndpoint: 'http://192.168.3.100:8081/sendenergy'
+<script>
+        // Конфигурация API
+        const API_CONFIG = {
+            baseUrl: 'http://192.168.3.100:8081',
+            endpoints: {
+                gas: '/sendgas',
+                energy: '/sendenergy'
+            }
         };
-        
-        // Загружаем сохраненные настройки
-        let config = JSON.parse(localStorage.getItem('meterConfig') || JSON.stringify(defaultConfig));
-        gasServerUrlInput.value = config.gasEndpoint;
-        energyServerUrlInput.value = config.energyEndpoint;
-        
-        // Переключение вкладок
-        gasTab.addEventListener('click', () => {
-            gasTab.classList.add('active');
-            electricityTab.classList.remove('active');
-            gasTabContent.classList.add('active');
-            electricityTabContent.classList.remove('active');
+
+        // Флаги и состояния
+        let isSendingGas = false;
+        let isSendingEnergy = false;
+        let currentTab = 'gas';
+
+        // Инициализация - привязываем обработчики ОДИН раз
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventHandlers();
+            setupInputValidation();
+            showInfo('Выберите тип счетчика и введите показания');
         });
-        
-        electricityTab.addEventListener('click', () => {
-            electricityTab.classList.add('active');
-            gasTab.classList.remove('active');
-            electricityTabContent.classList.add('active');
-            gasTabContent.classList.remove('active');
-        });
-        
-        // Сохранение настроек
-        saveSettingsBtn.addEventListener('click', () => {
-            const gasEndpoint = gasServerUrlInput.value.trim();
-            const energyEndpoint = energyServerUrlInput.value.trim();
+
+        // Настройка всех обработчиков событий ОДИН раз
+        function setupEventHandlers() {
+            // Удаляем onclick из HTML и привязываем здесь
+            const gasBtn = document.getElementById('gasBtn');
+            const energyBtn = document.getElementById('energyBtn');
             
-            if (!gasEndpoint || !energyEndpoint) {
-                showMessage('Пожалуйста, заполните оба endpoint\'а', 'error');
-                return;
-            }
+            gasBtn.removeAttribute('onclick');
+            energyBtn.removeAttribute('onclick');
             
-            config = {
-                gasEndpoint: gasEndpoint,
-                energyEndpoint: energyEndpoint
-            };
+            gasBtn.addEventListener('click', sendGasReading);
+            energyBtn.addEventListener('click', sendEnergyReading);
             
-            localStorage.setItem('meterConfig', JSON.stringify(config));
-            showMessage('Настройки сохранены!', 'success');
-        });
-        
-        // Сброс настроек
-        resetSettingsBtn.addEventListener('click', () => {
-            if (confirm('Сбросить настройки к значениям по умолчанию?')) {
-                config = { ...defaultConfig };
-                gasServerUrlInput.value = config.gasEndpoint;
-                energyServerUrlInput.value = config.energyEndpoint;
-                localStorage.setItem('meterConfig', JSON.stringify(config));
-                showMessage('Настройки сброшены', 'success');
-            }
-        });
-        
+            // Обработчики Enter
+            document.getElementById('gas').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendGasReading();
+            });
+            
+            document.getElementById('day').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') document.getElementById('night').focus();
+            });
+            
+            document.getElementById('night').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') sendEnergyReading();
+            });
+            
+            // Обработчики для электричества
+            document.getElementById('day').addEventListener('input', calculateSum);
+            document.getElementById('night').addEventListener('input', calculateSum);
+        }
+
+        // Переключение между вкладками
+        function switchTab(tabName) {
+            // ... код переключения ...
+        }
+
         // Отправка показаний газа
-        submitGasBtn.addEventListener('click', async () => {
-            const gasValue = document.getElementById('gas-value').value;
-            
-            if (!gasValue || parseInt(gasValue) < 0) {
-                showMessage('Пожалуйста, введите корректные показания газа (целое число ≥ 0)', 'error');
+        async function sendGasReading() {
+            // Защита от повторного вызова
+            if (isSendingGas) {
+                console.log('Запрос газа уже выполняется, пропускаем');
                 return;
             }
-            
-            // Формируем данные по структуре DataGas
-            const data = {
-                day: parseInt(gasValue)  // Поле "day" содержит значение газа
-            };
-            
-            await sendData(data, config.gasEndpoint, 'gas');
-        });
-        
-        // Отправка показаний электричества
-        submitElectricityBtn.addEventListener('click', async () => {
-            const dayValue = document.getElementById('day-reading').value;
-            const nightValue = document.getElementById('night-reading').value;
-            const summValue = document.getElementById('summ-reading').value;
-            
-            // Проверка ввода
-            if (!dayValue || !nightValue || !summValue) {
-                showMessage('Пожалуйста, заполните все поля для электричества', 'error');
+
+            const gasInput = document.getElementById('gas');
+            const gasValue = gasInput.value.trim();
+
+            // Валидация
+            if (!gasValue) {
+                showError('Введите показания газового счетчика');
+                gasInput.focus();
                 return;
             }
-            
-            const day = parseInt(dayValue);
-            const night = parseInt(nightValue);
-            const summ = parseInt(summValue);
-            
-            if (day < 0 || night < 0 || summ < 0) {
-                showMessage('Показания не могут быть отрицательными', 'error');
+
+            const gasNum = parseInt(gasValue);
+            if (isNaN(gasNum) || gasNum < 0) {
+                showError('Введите корректное положительное число');
+                gasInput.focus();
                 return;
             }
-            
-            // Проверяем сумму (опционально)
-            if (summ !== (day + night)) {
-                if (!confirm(`Сумма дневного (${day}) и ночного (${night}) = ${day + night}, но вы ввели ${summ}. Продолжить?`)) {
-                    return;
-                }
-            }
-            
-            // Формируем данные по структуре DataEnergy
-            const data = {
-                day: day,
-                night: night,
-                summ: summ
-            };
-            
-            await sendData(data, config.energyEndpoint, 'electricity');
-        });
-        
-        // Функция отправки данных на сервер
-        async function sendData(data, endpoint, type) {
+
+            // Блокировка
+            isSendingGas = true;
+            const btn = document.getElementById('gasBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
             try {
-                showMessage('Отправка данных...', 'success');
+                // Логируем отправку
+                console.log('Отправка газа:', { day: gasNum });
                 
-                console.log(`Отправка ${type} на ${endpoint}:`, data);
-                
-                const response = await fetch(endpoint, {
+                // Отправка запроса
+                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.gas}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ day: gasNum })
+                });
+
+                // Логируем ответ
+                console.log('Ответ сервера (газ):', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                showSuccess(`✅ Газ (${gasNum} м³) отправлен!`);
+                gasInput.value = '';
+                gasInput.focus();
+                
+            } catch (error) {
+                console.error('Ошибка отправки газа:', error);
+                showError(`❌ Ошибка: ${error.message}`);
+            } finally {
+                // Разблокировка с задержкой
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    isSendingGas = false;
+                }, 1000); // Задержка для защиты от быстрых повторных нажатий
+            }
+        }
+
+        // Отправка показаний электричества
+        async function sendEnergyReading() {
+            if (isSendingEnergy) {
+                console.log('Запрос электричества уже выполняется, пропускаем');
+                return;
+            }
+
+            const dayInput = document.getElementById('day');
+            const nightInput = document.getElementById('night');
+            
+            const dayValue = dayInput.value.trim();
+            const nightValue = nightInput.value.trim();
+            
+            const dayNum = parseInt(dayValue) || 0;
+            const nightNum = parseInt(nightValue) || 0;
+            const sumNum = dayNum + nightNum;
+
+            // Валидация
+            if (!dayValue && !nightValue) {
+                showError('Заполните хотя бы один тариф');
+                dayInput.focus();
+                return;
+            }
+
+            if ((dayValue && (isNaN(dayNum) || dayNum < 0)) || 
+                (nightValue && (isNaN(nightNum) || nightNum < 0))) {
+                showError('Введите корректные положительные числа');
+                return;
+            }
+
+            // Блокировка
+            isSendingEnergy = true;
+            const btn = document.getElementById('energyBtn');
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Отправка...';
+            btn.disabled = true;
+
+            try {
+                // Логируем отправку
+                const data = { day: dayNum, night: nightNum, summ: sumNum };
+                console.log('Отправка электричества:', data);
+                
+                // Отправка запроса
+                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.energy}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data)
                 });
+
+                // Логируем ответ
+                console.log('Ответ сервера (электричество):', response.status);
                 
-                if (response.ok) {
-                    let result;
-                    try {
-                        result = await response.json();
-                    } catch (e) {
-                        result = { message: 'Данные получены (не JSON ответ)' };
-                    }
-                    
-                    showMessage(`✅ Данные успешно отправлены на ${endpoint}`, 'success');
-                    
-                    // Сохраняем в историю
-                    saveToHistory({
-                        type: type,
-                        data: data,
-                        endpoint: endpoint,
-                        timestamp: new Date().toISOString()
-                    });
-                    
-                    // Очищаем поля
-                    clearInputs(type);
-                } else {
-                    const errorText = await response.text();
-                    showMessage(`❌ Ошибка сервера ${response.status}: ${errorText || 'Неизвестная ошибка'}`, 'error');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
                 }
+
+                const details = dayValue && nightValue 
+                    ? `День: ${dayNum}, Ночь: ${nightNum}` 
+                    : dayValue ? `День: ${dayNum}` : `Ночь: ${nightNum}`;
+                
+                showSuccess(`✅ Электричество отправлено! (${details})`);
+                
+                // Очистка
+                dayInput.value = '';
+                nightInput.value = '';
+                document.getElementById('sumDisplay').classList.remove('show');
+                dayInput.focus();
+                
             } catch (error) {
-                console.error('Ошибка отправки:', error);
-                showMessage(`❌ Ошибка подключения к ${endpoint}: ${error.message}`, 'error');
-            }
-        }
-        
-        // Функция показа сообщений
-        function showMessage(text, type) {
-            responseMessage.textContent = text;
-            responseMessage.className = 'response-message ' + type + ' fade-in';
-            
-            // Автоскрытие для успешных сообщений
-            if (type === 'success') {
+                console.error('Ошибка отправки электричества:', error);
+                showError(`❌ Ошибка: ${error.message}`);
+            } finally {
+                // Разблокировка с задержкой
                 setTimeout(() => {
-                    responseMessage.style.display = 'none';
-                }, 5000);
+                    btn.innerHTML = originalHTML;
+                    btn.disabled = false;
+                    isSendingEnergy = false;
+                }, 1000);
             }
         }
-        
-        // Сохранение в историю (localStorage)
-        function saveToHistory(entry) {
-            let history = JSON.parse(localStorage.getItem('meterHistory') || '[]');
-            
-            entry.sentAt = new Date().toLocaleString('ru-RU');
-            history.push(entry);
-            
-            // Храним только последние 50 записей
-            if (history.length > 50) {
-                history = history.slice(-50);
-            }
-            
-            localStorage.setItem('meterHistory', JSON.stringify(history));
-        }
-        
-        // Показать историю
-        showHistoryBtn.addEventListener('click', () => {
-            const history = JSON.parse(localStorage.getItem('meterHistory') || '[]');
-            
-            if (history.length === 0) {
-                showMessage('История отправок пуста', 'error');
-                return;
-            }
-            
-            let historyText = '📊 История отправок:\n\n';
-            history.forEach((item, index) => {
-                const date = new Date(item.timestamp).toLocaleString('ru-RU');
-                if (item.type === 'gas') {
-                    historyText += `${index + 1}. Газ на ${item.endpoint}\n`;
-                    historyText += `   Данные: {"day": ${item.data.day}}\n`;
-                } else {
-                    historyText += `${index + 1}. Электричество на ${item.endpoint}\n`;
-                    historyText += `   Данные: {"day": ${item.data.day}, "night": ${item.data.night}, "summ": ${item.data.summ}}\n`;
-                }
-                historyText += `   Время: ${item.sentAt}\n\n`;
-            });
-            
-            alert(historyText);
-        });
-        
-        // Очистка полей ввода
-        function clearInputs(type) {
-            if (type === 'gas') {
-                document.getElementById('gas-value').value = '';
-            } else if (type === 'electricity') {
-                document.getElementById('day-reading').value = '';
-                document.getElementById('night-reading').value = '';
-                document.getElementById('summ-reading').value = '';
-            }
-        }
-        
-        // Автоматический расчет суммы
-        document.getElementById('day-reading').addEventListener('input', calculateSum);
-        document.getElementById('night-reading').addEventListener('input', calculateSum);
-        
-        function calculateSum() {
-            const day = parseInt(document.getElementById('day-reading').value) || 0;
-            const night = parseInt(document.getElementById('night-reading').value) || 0;
-            const summInput = document.getElementById('summ-reading');
-            
-            if (day > 0 || night > 0) {
-                summInput.value = day + night;
-            }
-        }
-        
-        // Виброотклик на кнопках (для поддерживающих устройств)
-        const buttons = document.querySelectorAll('.btn, .tab');
-        buttons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (navigator.vibrate) {
-                    navigator.vibrate(10);
-                }
-            });
-        });
-        
-        // Сохранение ввода при перезагрузке
-        window.addEventListener('beforeunload', () => {
-            const inputs = {
-                gas: document.getElementById('gas-value').value,
-                day: document.getElementById('day-reading').value,
-                night: document.getElementById('night-reading').value,
-                summ: document.getElementById('summ-reading').value,
-                activeTab: document.querySelector('.tab.active').dataset.tab
-            };
-            localStorage.setItem('meterInputs', JSON.stringify(inputs));
-        });
-        
-        // Восстановление ввода при загрузке
-        window.addEventListener('load', () => {
-            const savedInputs = JSON.parse(localStorage.getItem('meterInputs') || '{}');
-            
-            if (savedInputs.gas) document.getElementById('gas-value').value = savedInputs.gas;
-            if (savedInputs.day) document.getElementById('day-reading').value = savedInputs.day;
-            if (savedInputs.night) document.getElementById('night-reading').value = savedInputs.night;
-            if (savedInputs.summ) document.getElementById('summ-reading').value = savedInputs.summ;
-            
-            if (savedInputs.activeTab === 'electricity') {
-                electricityTab.click();
+
+        // Глобальные функции для вызова из HTML (исправляем ошибку рекурсии)
+        window.sendGasReading = sendGasReading;
+        window.sendEnergyReading = sendEnergyReading;
+        window.switchTab = switchTab;
+        window.calculateSum = calculateSum;
+
+        // Обработчик Enter в полях ввода
+        document.getElementById('gas').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendGasReading();
             }
         });
-        
-        // Уведомление при успешной загрузке
-        window.addEventListener('load', () => {
-            console.log('Приложение "Умная Кладовая" успешно загружено!');
-            console.log('Конфигурация:', config);
+
+        document.getElementById('day').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('night').focus();
+            }
+        });
+
+        document.getElementById('night').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendEnergyReading();
+            }
         });
     </script>
 </body>

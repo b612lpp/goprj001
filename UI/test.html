@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Test Form</h2>
+    
+    <input type="number" id="value" placeholder="Enter value">
+    <button onclick="sendData()" id="submitBtn">Send</button>
+    
+    <div id="result"></div>
+    
+    <script>
+        let isSending = false;
+        
+        async function sendData() {
+            if (isSending) {
+                console.log('Already sending, skipping');
+                return;
+            }
+            
+            isSending = true;
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            
+            try {
+                const value = document.getElementById('value').value;
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ value: parseInt(value) })
+                });
+                
+                const result = await response.json();
+                console.log('Response:', result);
+                document.getElementById('result').innerHTML = 
+                    `Sent: ${JSON.stringify(result.saved)}`;
+                
+            } catch (error) {
+                console.error('Error:', error);
+            } finally {
+                isSending = false;
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

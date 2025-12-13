@@ -1,14 +1,19 @@
 package server
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/b612lpp/goprj001/server/data"
+)
 
 type mySrv struct {
 	Port string
 	Mux  http.ServeMux
+	DB   data.DataBase
 }
 
 func NewMySrv(p string) *mySrv {
-	h := mySrv{p, *http.NewServeMux()}
+	h := mySrv{p, *http.NewServeMux(), data.NewDb()}
 	h.Mux.HandleFunc("/", setCorsMW(h.home))
 	h.Mux.HandleFunc("/sendgas", setCorsMW(h.sendgas))
 	h.Mux.HandleFunc("/sendenergy", setCorsMW(h.sendenergy))

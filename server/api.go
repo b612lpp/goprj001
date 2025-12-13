@@ -1,7 +1,6 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -13,13 +12,15 @@ func (p *mySrv) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (p *mySrv) sendgas(w http.ResponseWriter, r *http.Request) {
+
 	qq := data.DataGas{}
-	json.NewDecoder(r.Body).Decode(&qq)
-	fmt.Printf("hello gas %d", qq.Vlue)
+	qq.FillData(r)
+	p.DB.AddInfo(qq)
+
 }
 
 func (p *mySrv) sendenergy(w http.ResponseWriter, r *http.Request) {
 	qq := data.DataEnergy{}
-	json.NewDecoder(r.Body).Decode(&qq)
-	fmt.Printf("hello energy %d", qq.Summ)
+	qq.FillData(r)
+	p.DB.AddInfo(qq)
 }
