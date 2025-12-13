@@ -9,7 +9,7 @@ import (
 type mySrv struct {
 	Port string
 	Mux  http.ServeMux
-	DB   data.DataBase
+	DB   *data.DataBase
 }
 
 func NewMySrv(p string) *mySrv {
@@ -26,6 +26,10 @@ func setCorsMW(next http.HandlerFunc) http.HandlerFunc {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == http.MethodOptions {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
 
 		next(w, r)
 	}

@@ -7,9 +7,9 @@ type DataBase struct {
 	e []DataEnergy
 }
 
-func NewDb() DataBase {
+func NewDb() *DataBase {
 	d := DataBase{}
-	return d
+	return &d
 
 }
 
