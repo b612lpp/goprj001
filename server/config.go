@@ -17,6 +17,7 @@ func NewMySrv(p string) *mySrv {
 	h.Mux.HandleFunc("/", setCorsMW(h.home))
 	h.Mux.HandleFunc("/sendgas", setCorsMW(h.sendgas))
 	h.Mux.HandleFunc("/sendenergy", setCorsMW(h.sendenergy))
+	h.Mux.HandleFunc("/gethistory", setCorsMW(h.gethistory))
 
 	return &h
 }

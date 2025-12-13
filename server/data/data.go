@@ -29,7 +29,6 @@ type TypeGetter interface {
 func (s *DataGas) FillData(r *http.Request) {
 	json.NewDecoder(r.Body).Decode(&s)
 	s.Data = time.Now()
-
 }
 
 func (s *DataEnergy) FillData(r *http.Request) {

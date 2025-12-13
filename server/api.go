@@ -1,6 +1,7 @@
 package server
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -23,4 +24,9 @@ func (p *mySrv) sendenergy(w http.ResponseWriter, r *http.Request) {
 	qq := data.DataEnergy{}
 	qq.FillData(r)
 	p.DB.AddInfo(qq)
+}
+
+func (p *mySrv) gethistory(w http.ResponseWriter, r *http.Request) {
+	json.NewEncoder(w).Encode(p.DB)
+	//fmt.Fprint(w, q)
 }

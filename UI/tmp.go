@@ -1,12 +1,12 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 
-	i := 42
-	q := &i
-
-	fmt.Println(i, &i, *q, q)
+	fmt.Println(time.Now().Format("02 Jan 2006 15:04"))
 
 }
