@@ -1,245 +1,177 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Счетчики</title>
-
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Показания счетчиков</title>
+  <style>
     body {
-        margin: 0;
-        font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-        background: #f5f5f7;
-        color: #111;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7f9;
+      color: #222;
     }
 
-    .container {
-        max-width: 420px;
-        margin: 0 auto;
-        padding: 16px;
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 16px;
     }
 
     h1 {
-        font-size: 22px;
-        margin-bottom: 12px;
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 16px;
     }
 
     .tabs {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 20px;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
     .tab {
-        flex: 1;
-        padding: 10px;
-        border-radius: 10px;
-        border: none;
-        background: #e0e0e5;
-        font-size: 15px;
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #e0e3e8;
+      font-size: 14px;
     }
 
     .tab.active {
-        background: #007aff;
-        color: white;
+      background: #4f46e5;
+      color: #fff;
     }
 
     .card {
-        background: white;
-        border-radius: 14px;
-        padding: 16px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      background: #fff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .field {
-        margin-bottom: 14px;
+    label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
     }
 
-    .field label {
-        display: block;
-        font-size: 13px;
-        margin-bottom: 4px;
-        color: #555;
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
 
-    .field input {
-        width: 100%;
-        padding: 10px;
-        font-size: 16px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
+    button.submit {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      background: #4f46e5;
+      color: #fff;
     }
 
-    .btn {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 12px;
-        font-size: 16px;
-        background: #007aff;
-        color: white;
-    }
+    .hidden { display: none; }
 
-    .status {
-        margin-top: 10px;
-        font-size: 14px;
-        color: green;
-        display: none;
+    ul {
+      padding-left: 18px;
+      font-size: 14px;
     }
-
-    .hidden {
-        display: none;
-    }
-
-    .history-item {
-        margin-bottom: 10px;
-        font-size: 14px;
-    }
-
-    .history-date {
-        color: #666;
-        font-size: 13px;
-    }
-</style>
+  </style>
 </head>
-
 <body>
-<div class="container">
-    <h1>Показания счетчиков</h1>
+  <div class="app">
+    <h1>Счетчики</h1>
 
     <div class="tabs">
-        <button class="tab active" onclick="showForm('gas', this)">Газ</button>
-        <button class="tab" onclick="showForm('energy', this)">Электро</button>
-        <button class="tab" onclick="showForm('history', this)">История</button>
+      <button class="tab active" onclick="showTab('gas')">Газ</button>
+      <button class="tab" onclick="showTab('energy')">Электро</button>
+      <button class="tab" onclick="showTab('history')">История</button>
     </div>
 
-    <!-- Газ -->
     <div id="gas" class="card">
-        <div class="field">
-            <label>Показание</label>
-            <input id="gasValue" type="number">
-        </div>
-        <button class="btn" onclick="sendGas()">Отправить</button>
-        <div id="gasStatus" class="status">Отправлено</div>
+      <label>Показание газа</label>
+      <input id="gasValue" type="number" />
+      <button class="submit" onclick="sendGas()">Отправить</button>
     </div>
 
-    <!-- Электро -->
     <div id="energy" class="card hidden">
-        <div class="field">
-            <label>День</label>
-            <input id="day" type="number">
-        </div>
-        <div class="field">
-            <label>Ночь</label>
-            <input id="night" type="number">
-        </div>
-        <div class="field">
-            <label>Сумма</label>
-            <input id="summ" type="number">
-        </div>
-        <button class="btn" onclick="sendEnergy()">Отправить</button>
-        <div id="energyStatus" class="status">Отправлено</div>
+      <label>День</label>
+      <input id="dayValue" type="number" />
+      <label>Ночь</label>
+      <input id="nightValue" type="number" />
+      <label>Итого</label>
+      <input id="sumValue" type="number" />
+      <button class="submit" onclick="sendEnergy()">Отправить</button>
     </div>
 
-    <!-- История -->
     <div id="history" class="card hidden">
-        <h3>Газ</h3>
-        <div id="gasHistory"></div>
-
-        <h3 style="margin-top:16px;">Электроэнергия</h3>
-        <div id="energyHistory"></div>
+      <button class="submit" onclick="loadHistory()">Обновить</button>
+      <ul id="historyList"></ul>
     </div>
-</div>
+  </div>
 
-<script>
-    function showForm(name, btn) {
-        document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
-        document.getElementById(name).classList.remove('hidden');
+  <script>
+    const API = 'http://localhost:8081';
 
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        btn.classList.add('active');
+    function showTab(name) {
+      document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
 
-        if (name === 'history') {
-            loadHistory();
-        }
+      document.getElementById(name).classList.remove('hidden');
+      event.target.classList.add('active');
     }
 
-    function sendGas() {
-        fetch("http://192.168.3.100:8081/sendgas", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                day: Number(document.getElementById("gasValue").value)
-            })
-        }).then(() => {
-            document.getElementById("gasStatus").style.display = "block";
-        });
+    async function sendGas() {
+      await fetch(API + '/sendgas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ day: Number(gasValue.value) })
+      });
+      gasValue.value = '';
     }
 
-    function sendEnergy() {
-        fetch("http://192.168.3.100:8081/sendenergy", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                day: Number(document.getElementById("day").value),
-                night: Number(document.getElementById("night").value),
-                summ: Number(document.getElementById("summ").value)
-            })
-        }).then(() => {
-            document.getElementById("energyStatus").style.display = "block";
-        });
+    async function sendEnergy() {
+      await fetch(API + '/sendenergy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day: Number(dayValue.value),
+          night: Number(nightValue.value),
+          summ: Number(sumValue.value)
+        })
+      });
+      dayValue.value = nightValue.value = sumValue.value = '';
     }
 
-    function loadHistory() {
-        fetch("http://192.168.3.100:8081/gethistory")
-            .then(r => r.json())
-            .then(data => {
-                renderGas(data.datagas);
-                renderEnergy(data.dataenergy);
-            });
+    async function loadHistory() {
+      const res = await fetch(API + '/gethistory');
+      const data = await res.json();
+      const ul = document.getElementById('historyList');
+      ul.innerHTML = '';
+
+      data.datagas.forEach(g => {
+        const li = document.createElement('li');
+        li.textContent = `Газ: ${g.day} — ${formatDate(g.Data)}`;
+        ul.appendChild(li);
+      });
+
+      data.dataenergy.forEach(e => {
+        const li = document.createElement('li');
+        li.textContent = `Электро: ${e.summ} (день ${e.day}, ночь ${e.night}) — ${formatDate(e.Data)}`;
+        ul.appendChild(li);
+      });
     }
 
-    function formatDate(dateStr) {
-        const d = new Date(dateStr);
-
-        const day = String(d.getDate()).padStart(2, '0');
-        const month = String(d.getMonth() + 1).padStart(2, '0');
-        const year = d.getFullYear();
-
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
-
-        return `${day}.${month}.${year} ${hours}:${minutes}:${seconds}`;
+    function formatDate(d) {
+      const dt = new Date(d);
+      return dt.toLocaleString('ru-RU');
     }
-
-    function renderGas(items) {
-        const root = document.getElementById("gasHistory");
-        root.innerHTML = "";
-
-        items.forEach(i => {
-            const div = document.createElement("div");
-            div.className = "history-item";
-            div.innerHTML = `<strong>${i.day}</strong><div class="history-date">${formatDate(i.Data)}</div>`;
-            root.appendChild(div);
-        });
-    }
-
-    function renderEnergy(items) {
-        const root = document.getElementById("energyHistory");
-        root.innerHTML = "";
-
-        items.forEach(i => {
-            const div = document.createElement("div");
-            div.className = "history-item";
-            div.innerHTML =
-                `<strong>День:</strong> ${i.day}, 
-                 <strong>Ночь:</strong> ${i.night}, 
-                 <strong>Сумма:</strong> ${i.summ}
-                 <div class="history-date">${formatDate(i.Data)}</div>`;
-            root.appendChild(div);
-        });
-    }
-</script>
+  </script>
 </body>
 </html>

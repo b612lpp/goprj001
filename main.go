@@ -8,8 +8,9 @@ import (
 
 func main() {
 
-	h := server.NewMySrv(":8081")
-	http.ListenAndServe(h.Port, &h.Mux)
+	s := server.NewServerConf() //
+	r := server.NewRouter(&s.Uc)
+	http.ListenAndServe(s.Port, r)
 }
 
 /**
