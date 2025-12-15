@@ -6,11 +6,12 @@ import "github.com/b612lpp/goprj001/metainf"
 type IMDB struct {
 	GasTable    []metainf.DataGas    //таблица для хранения данных по газу в формате заданной структуры
 	EnergyTable []metainf.DataEnergy //таблица для хранения данных по электричеству в формате заданной структуры
+	Title       string
 }
 
 //создание нового экземпляра. создается на уровне создания сервера
 func NewDB() *IMDB {
-	return &IMDB{}
+	return &IMDB{Title: "inmemory DB"}
 
 }
 

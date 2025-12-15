@@ -4,6 +4,7 @@ package handlers
 import (
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
@@ -31,16 +32,20 @@ func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	err := gh.Gdc.GasDataProcessor(v)
 	if errors.Is(err, metainf.ErrDBConn) {
 		w.WriteHeader(500)
+		slog.Error("ошибка записи в БД")
 		return
 	}
 
 	if errors.Is(err, metainf.ErrWrongData) {
 		w.WriteHeader(400)
+		slog.Error("ошибка данных по газу")
 		return
 	}
 	if err == nil {
 		w.WriteHeader(http.StatusOK)
+		slog.Info("данные газа успешно сохранены")
 		fmt.Fprint(w, "данные приняты")
+
 	}
 
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log/slog"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/server"
@@ -10,6 +11,8 @@ func main() {
 
 	s := server.NewServerConf() //
 	r := server.NewRouter(&s.Uc)
+	slog.SetDefault(s.Logger)
+	slog.Info("Сервер запущен. Порт сервера " + s.Port + " подключени к экземпляру БД  " + s.DB.Title)
 	http.ListenAndServe(s.Port, r)
 }
 
