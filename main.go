@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	s := server.NewServerConf()
+	s := server.NewServerConf() //
 	r := server.NewRouter(s.Gasuc)
 	http.ListenAndServe(s.Port, r)
 }

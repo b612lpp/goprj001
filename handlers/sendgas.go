@@ -1,3 +1,4 @@
+// Хэндлер. Стык логики и инфраструктуры. Здесь мы обрабатываем запрос от клиента, проводим десереализацию. Заполняем структуру и отдаём блок бизнеслогики.
 package handlers
 
 import (
@@ -13,10 +14,12 @@ type GasHandler struct {
 	Gdc *application.GasDataCase
 }
 
+// создаём новый экземпляр на этапе инициализации сервера
 func NewGasHandler(gdc *application.GasDataCase) *GasHandler {
 	return &GasHandler{Gdc: gdc}
 }
 
+// механика десереализации
 func (gh *GasHandler) SendGas(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataGas
 	err := json.NewDecoder(r.Body).Decode(&v)
@@ -25,7 +28,7 @@ func (gh *GasHandler) SendGas(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	gh.Gdc.AddGasRow(v)
+	gh.Gdc.AddGasRow(v) //передача куска десереализованной структуры
 	fmt.Println(v)
 
 }
