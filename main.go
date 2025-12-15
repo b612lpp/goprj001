@@ -9,7 +9,7 @@ import (
 func main() {
 
 	s := server.NewServerConf() //
-	r := server.NewRouter(s.Gasuc)
+	r := server.NewRouter(s.Guc, s.Euc)
 	http.ListenAndServe(s.Port, r)
 }
 

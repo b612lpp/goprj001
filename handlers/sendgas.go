@@ -15,12 +15,12 @@ type GasHandler struct {
 }
 
 // создаём новый экземпляр на этапе инициализации сервера
-func NewGasHandler(gdc *application.GasDataCase) *GasHandler {
+func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
 	return &GasHandler{Gdc: gdc}
 }
 
 // механика десереализации
-func (gh *GasHandler) SendGas(w http.ResponseWriter, r *http.Request) {
+func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataGas
 	err := json.NewDecoder(r.Body).Decode(&v)
 	if err != nil {
@@ -28,7 +28,7 @@ func (gh *GasHandler) SendGas(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	gh.Gdc.AddGasRow(v) //передача куска десереализованной структуры
+	gh.Gdc.GasDataProcessor(v) //передача куска десереализованной структуры
 	fmt.Println(v)
 
 }

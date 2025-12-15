@@ -7,16 +7,19 @@ import (
 )
 
 type Server struct {
-	Port  string
-	DB    *storage.IMDB
-	Gasuc *application.GasDataCase
+	Port string
+	DB   *storage.IMDB
+	//Gasuc *application.GasDataCase
+	Guc *application.GasDataCase
+	Euc *application.EnergyDataCase
 }
 
 func NewServerConf() Server {
 
 	port := ":8081"
 	db := storage.NewDB()
-	gasuc := application.NewGasDataCase(db)
+	guc := application.NewGasDataCase(db)
+	euc := application.NewEnergyDataCase(db)
 
-	return Server{port, db, gasuc}
+	return Server{port, db, guc, euc}
 }

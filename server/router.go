@@ -8,10 +8,11 @@ import (
 	"github.com/b612lpp/goprj001/handlers"
 )
 
-func NewRouter(s *application.GasDataCase) *http.ServeMux {
-	q := handlers.NewGasHandler(s) //создаём экземпляр. передаём созданную структуру бизнеслогики
+func NewRouter(uc *application.UseCases) *http.ServeMux {
+
 	m := http.NewServeMux()
-	m.HandleFunc("/sendgas", q.SendGas)
+	m.HandleFunc("/sendgas", handlers.NewGasHandlerFunc(uc.GasUc).ParseGasData) //создаём экземпляр. передаём созданную структуру бизнеслогики
+	m.HandleFunc("/sendenergy", handlers.NewEnergyHandlerFunc(uc.EnergyUc).ParseEnergyData)
 
 	return m
 }
