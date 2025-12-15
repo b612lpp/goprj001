@@ -2,6 +2,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -19,26 +20,27 @@ func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
 	return &GasHandler{Gdc: gdc}
 }
 
-// механика десереализации
+// хэндлер. получает от клиента данные по http, адаптирует(десереализует) и отдает в бизнес логику
 func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataGas
-	if err := utils.ParseUserData(w, r, &v); err != nil {
-		fmt.Fprint(w, err)
-		return
-	}
-
-	if v.Value < 0 {
+	if err := utils.ParseUserData(r, &v); err != nil {
 		w.WriteHeader(400)
-		fmt.Fprint(w, "некорректные данные")
 		return
 	}
 
-	if err := gh.Gdc.GasDataProcessor(v); err != nil {
+	err := gh.Gdc.GasDataProcessor(v)
+	if errors.Is(err, metainf.ErrDBConn) {
 		w.WriteHeader(500)
-		fmt.Fprint(w, "ошибка записи в базу")
 		return
-	} //передача куска десереализованной структуры
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "данные приняты")
+	}
+
+	if errors.Is(err, metainf.ErrWrongData) {
+		w.WriteHeader(400)
+		return
+	}
+	if err == nil {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "данные приняты")
+	}
 
 }

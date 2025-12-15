@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -17,20 +18,27 @@ func NewEnergyHandlerFunc(edc *application.EnergyDataCase) *EnergyHandler {
 	return &EnergyHandler{Edc: edc}
 }
 
+// хэндлер. обработчик запроса по http. нет бизнес логики, только транспорт и передача данных в юз кейс
 func (eh *EnergyHandler) ParseEnergyData(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataEnergy
-	if err := utils.ParseUserData(w, r, &v); err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, err)
-
-	}
-	if v.Day+v.Night != v.Summ || v.Day < 0 || v.Night < 0 {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprint(w, "некорректные данные")
+	if err := utils.ParseUserData(r, &v); err != nil {
+		w.WriteHeader(400)
 		return
-
 	}
-	eh.Edc.EnergyDataProcessor(v)
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "данные приняты")
+
+	err := eh.Edc.EnergyDataProcessor(v)
+	if errors.Is(err, metainf.ErrDBConn) {
+		w.WriteHeader(500)
+		return
+	}
+
+	if errors.Is(err, metainf.ErrWrongData) {
+		w.WriteHeader(400)
+		return
+	}
+	if err == nil {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, "данные приняты")
+	}
+
 }
