@@ -8,13 +8,9 @@ import (
 
 func main() {
 
-	/*
-		В мейне создаём БД, Юз кейс, мьюкс
-	*/
-	conf := server.NewServerConf()
-
-	h := server.NewMySrv(":8081")
-	http.ListenAndServe(h.Port, &h.Mux)
+	s := server.NewServerConf()
+	r := server.NewRouter(s.Gasuc)
+	http.ListenAndServe(s.Port, r)
 }
 
 /**

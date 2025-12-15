@@ -6,16 +6,16 @@ import (
 )
 
 type Server struct {
-	port  string
+	Port  string
 	DB    *storage.IMDB
 	Gasuc *application.GasDataCase
-	Dw    application.DataWriter
 }
 
 func NewServerConf() Server {
+
 	port := ":8081"
 	db := storage.NewDB()
-	gasuc := application.NewGasDataCase()
+	gasuc := application.NewGasDataCase(db)
 
 	return Server{port, db, gasuc}
 }

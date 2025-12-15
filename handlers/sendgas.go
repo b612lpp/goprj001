@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
@@ -24,10 +25,7 @@ func (gh *GasHandler) SendGas(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if gh.Gdc.AddGasRow(v) != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	w.WriteHeader(http.StatusOK)
+	gh.Gdc.AddGasRow(v)
+	fmt.Println(v)
 
 }
