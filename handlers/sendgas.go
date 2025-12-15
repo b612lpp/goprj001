@@ -2,12 +2,12 @@
 package handlers
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
 	"github.com/b612lpp/goprj001/metainf"
+	"github.com/b612lpp/goprj001/utils"
 )
 
 type GasHandler struct {
@@ -22,13 +22,23 @@ func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
 // механика десереализации
 func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataGas
-	err := json.NewDecoder(r.Body).Decode(&v)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
+	if err := utils.ParseUserData(w, r, &v); err != nil {
+		fmt.Fprint(w, err)
 		return
 	}
 
-	gh.Gdc.GasDataProcessor(v) //передача куска десереализованной структуры
-	fmt.Println(v)
+	if v.Value < 0 {
+		w.WriteHeader(400)
+		fmt.Fprint(w, "некорректные данные")
+		return
+	}
+
+	if err := gh.Gdc.GasDataProcessor(v); err != nil {
+		w.WriteHeader(500)
+		fmt.Fprint(w, "ошибка записи в базу")
+		return
+	} //передача куска десереализованной структуры
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "данные приняты")
 
 }
