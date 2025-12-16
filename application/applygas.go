@@ -3,6 +3,8 @@
 package application
 
 import (
+	"time"
+
 	"github.com/b612lpp/goprj001/metainf"
 )
 
@@ -19,6 +21,7 @@ func (gdc *GasDataCase) GasDataProcessor(dg metainf.DataGas) error {
 
 		return metainf.ErrWrongData
 	}
+	dg.Time = time.Now()
 	//Запись данных в хранилище через интерфейс
 	if err := gdc.Gdp.AddGas(dg); err != nil {
 		return metainf.ErrDBConn

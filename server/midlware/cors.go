@@ -1,14 +1,20 @@
 package midlware
 
 import (
-	"fmt"
 	"net/http"
 )
 
 func MWCors(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Println("первый хэндлер вызван")
-		next(w, r)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(200)
+			return
+		}
+
+		next.ServeHTTP(w, r)
 	}
 
 }

@@ -1,6 +1,8 @@
 package application
 
 import (
+	"time"
+
 	"github.com/b612lpp/goprj001/metainf"
 )
 
@@ -14,6 +16,7 @@ func (edc *EnergyDataCase) EnergyDataProcessor(ed metainf.DataEnergy) error {
 	if ed.Day < 0 || ed.Night < 0 || ed.Day+ed.Night != ed.Summ {
 		return metainf.ErrWrongData
 	}
+	ed.Time = time.Now()
 	//запуск метода записи в БД через интерфейс
 	if err := edc.Edp.AddEnergy(ed); err != nil {
 		return metainf.ErrDBConn

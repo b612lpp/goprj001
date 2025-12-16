@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Показания счётчиков</title>
+<title>Счётчики</title>
 
 <style>
 body {
 	font-family: system-ui, sans-serif;
 	margin: 0;
 	padding: 16px;
-	background: #f5f5f5;
+	background: #f2f2f2;
 }
 
 nav {
@@ -19,16 +19,17 @@ nav {
 	margin-bottom: 16px;
 }
 
-button {
+nav button {
 	flex: 1;
 	padding: 10px;
 	border: none;
-	border-radius: 8px;
+	border-radius: 10px;
 	background: #ddd;
+	font-weight: 500;
 }
 
-button.active {
-	background: #333;
+nav button.active {
+	background: #222;
 	color: #fff;
 }
 
@@ -36,7 +37,7 @@ section {
 	display: none;
 	background: #fff;
 	padding: 16px;
-	border-radius: 8px;
+	border-radius: 12px;
 }
 
 section.active {
@@ -45,15 +46,30 @@ section.active {
 
 input {
 	width: 100%;
-	padding: 8px;
+	padding: 10px;
 	margin-bottom: 12px;
+	border-radius: 8px;
+	border: 1px solid #ccc;
 }
 
-pre {
-	white-space: pre-wrap;
-	background: #eee;
-	padding: 8px;
-	border-radius: 6px;
+.card {
+	background: #fafafa;
+	padding: 12px;
+	border-radius: 10px;
+	margin-bottom: 10px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.card .date {
+	font-size: 12px;
+	color: #666;
+	margin-bottom: 6px;
+}
+
+.card .row {
+	display: flex;
+	justify-content: space-between;
+	font-size: 14px;
 }
 </style>
 </head>
@@ -61,22 +77,22 @@ pre {
 <body>
 
 <nav>
-	<button onclick="show('gas')" class="active">Газ</button>
+	<button class="active" onclick="show('gas')">Газ</button>
 	<button onclick="show('energy')">Электро</button>
 	<button onclick="show('history')">История</button>
 </nav>
 
 <section id="gas" class="active">
 	<h3>Газ</h3>
-	<input id="gasValue" type="number" placeholder="Показание"/>
+	<input id="gasValue" type="number" placeholder="Показание">
 	<button onclick="sendGas()">Отправить</button>
 </section>
 
 <section id="energy">
 	<h3>Электроэнергия</h3>
-	<input id="day" type="number" placeholder="День"/>
-	<input id="night" type="number" placeholder="Ночь"/>
-	<input id="summ" type="number" placeholder="Сумма"/>
+	<input id="day" type="number" placeholder="День">
+	<input id="night" type="number" placeholder="Ночь">
+	<input id="summ" type="number" placeholder="Сумма">
 	<button onclick="sendEnergy()">Отправить</button>
 </section>
 
@@ -84,7 +100,7 @@ pre {
 	<h3>История</h3>
 	<button onclick="loadGasHistory()">Газ</button>
 	<button onclick="loadEnergyHistory()">Электро</button>
-	<pre id="historyOutput"></pre>
+	<div id="historyList"></div>
 </section>
 
 <script>
@@ -93,7 +109,6 @@ const API = "http://localhost:8081";
 function show(id) {
 	document.querySelectorAll("section").forEach(s => s.classList.remove("active"));
 	document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-
 	document.getElementById(id).classList.add("active");
 	event.target.classList.add("active");
 }
@@ -122,12 +137,57 @@ async function sendEnergy() {
 
 async function loadGasHistory() {
 	const r = await fetch(API + "/history/gas");
-	historyOutput.textContent = await r.text();
+	const data = await r.json();
+	renderGasHistory(data);
 }
 
 async function loadEnergyHistory() {
 	const r = await fetch(API + "/history/energy");
-	historyOutput.textContent = await r.text();
+	const data = await r.json();
+	renderEnergyHistory(data);
+}
+
+function renderGasHistory(items) {
+	const root = document.getElementById("historyList");
+	root.innerHTML = "";
+	items.forEach(i => {
+		root.appendChild(card([
+			["Показание", i.value]
+		], i.data));
+	});
+}
+
+function renderEnergyHistory(items) {
+	const root = document.getElementById("historyList");
+	root.innerHTML = "";
+	items.forEach(i => {
+		root.appendChild(card([
+			["День", i.day],
+			["Ночь", i.night],
+			["Сумма", i.summ]
+		], i.data));
+	});
+}
+
+function card(rows, date) {
+	const c = document.createElement("div");
+	c.className = "card";
+
+	if (date) {
+		const d = document.createElement("div");
+		d.className = "date";
+		d.textContent = date;
+		c.appendChild(d);
+	}
+
+	rows.forEach(([k,v]) => {
+		const r = document.createElement("div");
+		r.className = "row";
+		r.innerHTML = `<span>${k}</span><strong>${v}</strong>`;
+		c.appendChild(r);
+	});
+
+	return c;
 }
 </script>
 

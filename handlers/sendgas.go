@@ -29,6 +29,7 @@ func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(400)
 		return
 	}
+
 	//скармливаем структуру в бизнес логику юзкейса и возвращаем ошибки в канал
 	err := gh.Gdc.GasDataProcessor(v)
 	if errors.Is(err, metainf.ErrDBConn) {

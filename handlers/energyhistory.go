@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
-	"github.com/b612lpp/goprj001/utils"
 )
 
 type EnergyHistoryHandlerFunc struct {
@@ -25,11 +24,7 @@ func (eh *EnergyHistoryHandlerFunc) GetAndFormJsonEn(w http.ResponseWriter, r *h
 		w.WriteHeader(500)
 		return
 	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(z)
 
-	q, err := utils.JsonFormer(z)
-	if err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	fmt.Fprint(w, q)
 }

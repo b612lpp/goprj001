@@ -20,6 +20,7 @@ func NewServerConf() Server {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 	port := ":8081"
 	db := storage.NewDB()
+	//самая важная часть. определяется связь юз кейса и интерфейса хранилища. важно db реализует интерфейс writer
 	x := application.UseCases{GasUc: application.NewGasDataCase(db), EnergyUc: application.NewEnergyDataCase(db)}
 	return Server{port, logger, db, x}
 }

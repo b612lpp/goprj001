@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"fmt"
+	"encoding/json"
 	"log/slog"
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
-	"github.com/b612lpp/goprj001/utils"
 )
 
 type GasHistoryHandlerFunc struct {
@@ -24,13 +23,10 @@ func (hf *GasHistoryHandlerFunc) GetAndFormJson(w http.ResponseWriter, r *http.R
 		w.WriteHeader(500)
 		return
 	}
-	d, err := utils.JsonFormer(gd)
-	if err != nil {
-		slog.Error("ошибка формирования ответа клиенту")
-		w.WriteHeader(500)
-		return
-	}
-	fmt.Fprintln(w, d)
+	w.Header().Set("Content-Type", "application/json")
+
+	json.NewEncoder(w).Encode(gd)
+
 }
 
 /* с чем должен работать хэндлер:
