@@ -26,3 +26,21 @@ func (db *IMDB) AddEnergy(gt metainf.DataEnergy) error {
 	db.EnergyTable = append(db.EnergyTable, gt)
 	return nil
 }
+
+//возвращаем табличку газа
+func (db *IMDB) ReadGas() ([]metainf.DataGas, error) {
+	q := db.GasTable
+	if q == nil {
+		return q, metainf.ErrDBConn
+	}
+	return q, nil
+}
+
+//возвращаем табличку электричества
+func (db *IMDB) ReadEnergy() ([]metainf.DataEnergy, error) {
+	q := db.EnergyTable
+	if q == nil {
+		return q, metainf.ErrDBConn
+	}
+	return q, nil
+}

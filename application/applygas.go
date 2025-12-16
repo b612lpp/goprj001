@@ -7,20 +7,31 @@ import (
 )
 
 // Создается экземпляр объекта исполняющего бизнеслогику
-func NewGasDataCase(dw GasDataWriter) *GasDataCase {
+func NewGasDataCase(dp GasDataProvider) *GasDataCase {
 
-	return &GasDataCase{Gdw: dw}
+	return &GasDataCase{Gdp: dp}
 
 }
 
-// Вызов интерфейса записи данных в хранилище
+// Прогон данных п о бизнесс сценарию
 func (gdc *GasDataCase) GasDataProcessor(dg metainf.DataGas) error {
 	if dg.Value < 0 {
 
 		return metainf.ErrWrongData
 	}
-	if err := gdc.Gdw.AddGas(dg); err != nil {
+	//Запись данных в хранилище через интерфейс
+	if err := gdc.Gdp.AddGas(dg); err != nil {
 		return metainf.ErrDBConn
 	}
 	return nil
+}
+
+func (gdc *GasDataCase) GasDataGetter() ([]metainf.DataGas, error) {
+
+	q, err := gdc.Gdp.ReadGas()
+	if err != nil {
+		return nil, metainf.ErrDBRead
+	}
+
+	return q, nil
 }

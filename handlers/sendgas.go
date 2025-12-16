@@ -24,11 +24,12 @@ func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
 // хэндлер. получает от клиента данные по http, адаптирует(десереализует) и отдает в бизнес логику
 func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	var v metainf.DataGas
+	//парсим json
 	if err := utils.ParseUserData(r, &v); err != nil {
 		w.WriteHeader(400)
 		return
 	}
-
+	//скармливаем структуру в бизнес логику юзкейса и возвращаем ошибки в канал
 	err := gh.Gdc.GasDataProcessor(v)
 	if errors.Is(err, metainf.ErrDBConn) {
 		w.WriteHeader(500)
