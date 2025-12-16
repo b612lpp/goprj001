@@ -2,7 +2,7 @@
 package application
 
 import (
-	"github.com/b612lpp/goprj001/metainf"
+	"github.com/b612lpp/goprj001/domain"
 )
 
 // Структура хранения бизнес сценариев через которые проходят данные.
@@ -13,14 +13,14 @@ type UseCases struct {
 
 // Описываем интерфейс записи данных в хранилище. За интерефейсом может быть что угодно созданное на уровне создания сервера
 type GasDataProvider interface {
-	AddGas(metainf.DataGas) error
-	ReadGas() ([]metainf.DataGas, error)
+	AddGas(domain.DataGas) error
+	ReadGas() ([]domain.DataGas, error)
 }
 
 // Интерфейс для записи данных по электричеству
 type EnergyDataProvider interface {
-	AddEnergy(metainf.DataEnergy) error
-	ReadEnergy() ([]metainf.DataEnergy, error)
+	AddEnergy(domain.DataEnergy) error
+	ReadEnergy() ([]domain.DataEnergy, error)
 }
 
 type GasDataCase struct {

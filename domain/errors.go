@@ -1,4 +1,4 @@
-package metainf
+package domain
 
 import "errors"
 

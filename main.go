@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	"github.com/b612lpp/goprj001/server"
-	"github.com/b612lpp/goprj001/server/midlware"
+	"github.com/b612lpp/goprj001/server/middleware"
 )
 
 func main() {
 
 	s := server.NewServerConf() //
-	r := midlware.LoggingMiddleware(midlware.MWCors(server.NewRouter(&s.Uc)))
+	r := middleware.LoggingMiddleware(middleware.MWCors(server.NewRouter(&s.Uc)))
 	slog.SetDefault(s.Logger)
 	slog.Info("Сервер запущен. Порт сервера " + s.Port + " подключени к экземпляру БД  " + s.DB.Title)
 	if err := http.ListenAndServe(s.Port, r); err != nil {

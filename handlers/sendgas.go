@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/b612lpp/goprj001/application"
-	"github.com/b612lpp/goprj001/metainf"
+	"github.com/b612lpp/goprj001/domain"
 	"github.com/b612lpp/goprj001/utils"
 )
 
@@ -23,7 +23,7 @@ func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
 
 // хэндлер. получает от клиента данные по http, адаптирует(десереализует) и отдает в бизнес логику
 func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
-	var v metainf.DataGas
+	var v domain.DataGas
 	//парсим json
 	if err := utils.ParseUserData(r, &v); err != nil {
 		w.WriteHeader(400)
@@ -32,13 +32,13 @@ func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 
 	//скармливаем структуру в бизнес логику юзкейса и возвращаем ошибки в канал
 	err := gh.UseCase.GasDataCase(v)
-	if errors.Is(err, metainf.ErrDBConn) {
+	if errors.Is(err, domain.ErrDBConn) {
 		w.WriteHeader(500)
 		slog.Error("ошибка записи в БД")
 		return
 	}
 
-	if errors.Is(err, metainf.ErrWrongData) {
+	if errors.Is(err, domain.ErrWrongData) {
 		w.WriteHeader(400)
 		slog.Error("ошибка данных по газу")
 		return

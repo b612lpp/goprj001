@@ -5,7 +5,7 @@ package application
 import (
 	"time"
 
-	"github.com/b612lpp/goprj001/metainf"
+	"github.com/b612lpp/goprj001/domain"
 )
 
 // Создается экземпляр объекта исполняющего бизнеслогику
@@ -16,24 +16,24 @@ func NewGasDataCase(dp GasDataProvider) *GasDataCase {
 }
 
 // Прогон данных п о бизнесс сценарию
-func (gdc *GasDataCase) GasDataCase(dg metainf.DataGas) error {
+func (gdc *GasDataCase) GasDataCase(dg domain.DataGas) error {
 	if dg.Value < 0 {
 
-		return metainf.ErrWrongData
+		return domain.ErrWrongData
 	}
 	dg.Time = time.Now()
 	//Запись данных в хранилище через интерфейс
 	if err := gdc.Provider.AddGas(dg); err != nil {
-		return metainf.ErrDBConn
+		return domain.ErrDBConn
 	}
 	return nil
 }
 
-func (gdc *GasDataCase) GasHistory() ([]metainf.DataGas, error) {
+func (gdc *GasDataCase) GasHistory() ([]domain.DataGas, error) {
 
 	q, err := gdc.Provider.ReadGas()
 	if err != nil {
-		return nil, metainf.ErrDBRead
+		return nil, domain.ErrDBRead
 	}
 
 	return q, nil
