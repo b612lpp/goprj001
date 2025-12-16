@@ -8,25 +8,25 @@ import (
 
 // Создаёт экземпляр объекта в котором данные по электричеству обрабатываются по бизнесс сценарию и сохраняются в БД
 func NewEnergyDataCase(dp EnergyDataProvider) *EnergyDataCase {
-	return &EnergyDataCase{Edp: dp}
+	return &EnergyDataCase{Provider: dp}
 }
 
 // Бизнес сценарий. В данном случае проверка данных по шаблону бизнеса, а не типов.
-func (edc *EnergyDataCase) EnergyDataProcessor(ed metainf.DataEnergy) error {
+func (edc *EnergyDataCase) EnergyDataCase(ed metainf.DataEnergy) error {
 	if ed.Day < 0 || ed.Night < 0 || ed.Day+ed.Night != ed.Summ {
 		return metainf.ErrWrongData
 	}
 	ed.Time = time.Now()
 	//запуск метода записи в БД через интерфейс
-	if err := edc.Edp.AddEnergy(ed); err != nil {
+	if err := edc.Provider.AddEnergy(ed); err != nil {
 		return metainf.ErrDBConn
 	}
 	return nil
 }
 
-func (edc *EnergyDataCase) EnergyDataGetter() ([]metainf.DataEnergy, error) {
+func (edc *EnergyDataCase) EnergyHistory() ([]metainf.DataEnergy, error) {
 
-	q, err := edc.Edp.ReadEnergy()
+	q, err := edc.Provider.ReadEnergy()
 	if err != nil {
 		return nil, metainf.ErrDBRead
 	}

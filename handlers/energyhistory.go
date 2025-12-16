@@ -9,16 +9,16 @@ import (
 )
 
 type EnergyHistoryHandlerFunc struct {
-	Edc *application.EnergyDataCase
+	UseCase *application.EnergyDataCase
 }
 
 func NewEnergyHistoryHandlerFunc(edc *application.EnergyDataCase) *EnergyHistoryHandlerFunc {
-	return &EnergyHistoryHandlerFunc{Edc: edc}
+	return &EnergyHistoryHandlerFunc{UseCase: edc}
 }
 
-func (eh *EnergyHistoryHandlerFunc) GetAndFormJsonEn(w http.ResponseWriter, r *http.Request) {
+func (eh *EnergyHistoryHandlerFunc) EnergyHistory(w http.ResponseWriter, r *http.Request) {
 
-	z, err := eh.Edc.EnergyDataGetter()
+	z, err := eh.UseCase.EnergyHistory()
 	slog.Info("из базы данные получили ")
 	if err != nil {
 		w.WriteHeader(500)

@@ -24,9 +24,9 @@ type EnergyDataProvider interface {
 }
 
 type GasDataCase struct {
-	Gdp GasDataProvider
+	Provider GasDataProvider
 }
 
 type EnergyDataCase struct {
-	Edp EnergyDataProvider
+	Provider EnergyDataProvider
 }

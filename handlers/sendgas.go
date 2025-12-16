@@ -13,12 +13,12 @@ import (
 )
 
 type GasHandler struct {
-	Gdc *application.GasDataCase
+	UseCase *application.GasDataCase
 }
 
 // создаём новый экземпляр на этапе инициализации сервера
 func NewGasHandlerFunc(gdc *application.GasDataCase) *GasHandler {
-	return &GasHandler{Gdc: gdc}
+	return &GasHandler{UseCase: gdc}
 }
 
 // хэндлер. получает от клиента данные по http, адаптирует(десереализует) и отдает в бизнес логику
@@ -31,7 +31,7 @@ func (gh *GasHandler) ParseGasData(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//скармливаем структуру в бизнес логику юзкейса и возвращаем ошибки в канал
-	err := gh.Gdc.GasDataProcessor(v)
+	err := gh.UseCase.GasDataCase(v)
 	if errors.Is(err, metainf.ErrDBConn) {
 		w.WriteHeader(500)
 		slog.Error("ошибка записи в БД")

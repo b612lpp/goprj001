@@ -11,10 +11,12 @@ import (
 func main() {
 
 	s := server.NewServerConf() //
-	r := midlware.MWCors(server.NewRouter(&s.Uc).ServeHTTP)
+	r := midlware.LoggingMiddleware(midlware.MWCors(server.NewRouter(&s.Uc)))
 	slog.SetDefault(s.Logger)
 	slog.Info("Сервер запущен. Порт сервера " + s.Port + " подключени к экземпляру БД  " + s.DB.Title)
-	http.ListenAndServe(s.Port, r)
+	if err := http.ListenAndServe(s.Port, r); err != nil {
+		slog.Error("Ошибка сервера: " + err.Error())
+	}
 
 }
 

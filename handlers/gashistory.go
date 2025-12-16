@@ -9,15 +9,15 @@ import (
 )
 
 type GasHistoryHandlerFunc struct {
-	Gdc *application.GasDataCase
+	UseCase *application.GasDataCase
 }
 
 func NewGasHistoryHandlerFunc(gdc *application.GasDataCase) *GasHistoryHandlerFunc {
-	return &GasHistoryHandlerFunc{Gdc: gdc}
+	return &GasHistoryHandlerFunc{UseCase: gdc}
 }
 
-func (hf *GasHistoryHandlerFunc) GetAndFormJson(w http.ResponseWriter, r *http.Request) {
-	gd, err := hf.Gdc.GasDataGetter()
+func (hf *GasHistoryHandlerFunc) GasHistory(w http.ResponseWriter, r *http.Request) {
+	gd, err := hf.UseCase.GasHistory()
 	if err != nil {
 		slog.Error("ошибка получения истории газа")
 		w.WriteHeader(500)

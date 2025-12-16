@@ -11,27 +11,27 @@ import (
 // Создается экземпляр объекта исполняющего бизнеслогику
 func NewGasDataCase(dp GasDataProvider) *GasDataCase {
 
-	return &GasDataCase{Gdp: dp}
+	return &GasDataCase{Provider: dp}
 
 }
 
 // Прогон данных п о бизнесс сценарию
-func (gdc *GasDataCase) GasDataProcessor(dg metainf.DataGas) error {
+func (gdc *GasDataCase) GasDataCase(dg metainf.DataGas) error {
 	if dg.Value < 0 {
 
 		return metainf.ErrWrongData
 	}
 	dg.Time = time.Now()
 	//Запись данных в хранилище через интерфейс
-	if err := gdc.Gdp.AddGas(dg); err != nil {
+	if err := gdc.Provider.AddGas(dg); err != nil {
 		return metainf.ErrDBConn
 	}
 	return nil
 }
 
-func (gdc *GasDataCase) GasDataGetter() ([]metainf.DataGas, error) {
+func (gdc *GasDataCase) GasHistory() ([]metainf.DataGas, error) {
 
-	q, err := gdc.Gdp.ReadGas()
+	q, err := gdc.Provider.ReadGas()
 	if err != nil {
 		return nil, metainf.ErrDBRead
 	}

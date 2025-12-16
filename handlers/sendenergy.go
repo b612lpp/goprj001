@@ -12,11 +12,11 @@ import (
 )
 
 type EnergyHandler struct {
-	Edc *application.EnergyDataCase
+	UseCase *application.EnergyDataCase
 }
 
 func NewEnergyHandlerFunc(edc *application.EnergyDataCase) *EnergyHandler {
-	return &EnergyHandler{Edc: edc}
+	return &EnergyHandler{UseCase: edc}
 }
 
 // хэндлер. обработчик запроса по http. нет бизнес логики, только транспорт и передача данных в юз кейс
@@ -29,7 +29,7 @@ func (eh *EnergyHandler) ParseEnergyData(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	//скармливаем структурку в бизнесс логику и возвращаем ошибки в канал
-	err := eh.Edc.EnergyDataProcessor(v)
+	err := eh.UseCase.EnergyDataCase(v)
 	if errors.Is(err, metainf.ErrDBConn) {
 		w.WriteHeader(500)
 		slog.Error("ошибка записи в БД")

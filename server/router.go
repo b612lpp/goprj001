@@ -14,8 +14,8 @@ func NewRouter(uc *application.UseCases) *http.ServeMux {
 	m := http.NewServeMux()
 	m.HandleFunc("/sendgas", handlers.NewGasHandlerFunc(uc.GasUc).ParseGasData) //создаём экземпляр. передаём созданную структуру бизнеслогики
 	m.HandleFunc("/sendenergy", handlers.NewEnergyHandlerFunc(uc.EnergyUc).ParseEnergyData)
-	m.HandleFunc("/history/gas", handlers.NewGasHistoryHandlerFunc(uc.GasUc).GetAndFormJson)
-	m.HandleFunc("/history/energy", handlers.NewEnergyHistoryHandlerFunc(uc.EnergyUc).GetAndFormJsonEn)
+	m.HandleFunc("/history/gas", handlers.NewGasHistoryHandlerFunc(uc.GasUc).GasHistory)
+	m.HandleFunc("/history/energy", handlers.NewEnergyHistoryHandlerFunc(uc.EnergyUc).EnergyHistory)
 
 	return m
 }
